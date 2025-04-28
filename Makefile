@@ -1,5 +1,17 @@
+ERROR ?= "\e[31m"
+WARN ?= "\e[33m"
+NORMAL ?= "\e[32m"
+RESET ?= "\e[0m"
+
 APPS := $(shell find apps -maxdepth 1 -mindepth 1 -type d | sed 's|apps/||')
 ELF_PATH := bin
+
+# default mode: relaease
+# default target: riscv64
+# default lib: glibc
+MODE ?= release
+TARGET ?= riscv64gc-unknown-none-elf
+LIB_NAME ?= glibc
 TARGET_DIR := $(shell pwd)/target/$(TARGET)/$(MODE)
 
 FEATURES := --target $(TARGET) --release
