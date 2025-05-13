@@ -11,15 +11,9 @@ ELF_PATH := bin
 # default lib: glibc
 MODE ?= release
 TARGET ?= riscv64gc-unknown-none-elf
-LIB_NAME ?= glibc
 TARGET_DIR := $(shell pwd)/target/$(TARGET)/$(MODE)
 
 FEATURES := --target $(TARGET) --release
-ifeq ($(LIB_NAME),glibc)
-	FEATURES += --features "glibc"
-else ifeq ($(LIB_NAME),musl)
-	FEATURES += --features "musl"
-endif
 
 all: build
 
