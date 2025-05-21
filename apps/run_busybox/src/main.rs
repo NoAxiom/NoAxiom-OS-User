@@ -13,12 +13,11 @@ use libd::{
 
 #[no_mangle]
 fn main() -> i32 {
-    // 用户态执行fork，execve系统调用的请求
     if fork() == 0 {
-        let path = format!("PATH={}\0", ROOT_NAME);
-        let ld_lib_path = format!("LD_LIBRARY_PATH={}\0", ROOT_NAME);
-        execve(
-            "busybox\0",
+        let path = format!("PATH=/\0");
+        let ld_lib_path = format!("LD_LIBRARY_PATH=/\0");
+        let res = execve(
+            "/glibc/busybox\0",
             &[
                 "busybox\0".as_ptr(),
                 "sh\0".as_ptr(),
@@ -31,6 +30,24 @@ fn main() -> i32 {
                 core::ptr::null::<u8>(),
             ],
         );
+        // exec failed, try execute under root
+        if res < 0 {
+            execve(
+                "/busybox\0",
+                &[
+                    "busybox\0".as_ptr(),
+                    "sh\0".as_ptr(),
+                    core::ptr::null::<u8>(),
+                ],
+                &[
+                    path.as_str().as_ptr(),
+                    ld_lib_path.as_str().as_ptr(),
+                    "TERM=screen\0".as_ptr(),
+                    core::ptr::null::<u8>(),
+                ],
+            );
+            unreachable!();
+        }
     } else {
         loop {
             let mut exit_code: usize = 0;
