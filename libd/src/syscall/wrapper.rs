@@ -7,12 +7,11 @@ use alloc::{
 
 use virtio_input_decoder::{DecodeType, Decoder};
 
-use crate::syscall::utils::Dirent64;
-
 use super::{
     syscall::*,
     utils::{FileMode, OpenFlags},
 };
+use crate::syscall::utils::Dirent64;
 
 pub fn fork() -> isize {
     sys_fork()
@@ -28,6 +27,10 @@ pub fn execve(path: &str, args: &[*const u8], envp: &[*const u8]) -> isize {
 
 pub fn write(fd: usize, buf: &[u8]) -> isize {
     sys_write(fd, buf.as_ptr(), buf.len())
+}
+
+pub fn pipe2(fd: &mut [u32; 2], flags: usize) -> isize {
+    sys_pipe2(fd.as_mut_ptr(), flags)
 }
 
 pub fn read(fd: usize, buf: &mut [u8]) -> isize {
@@ -152,7 +155,7 @@ pub fn getdents(fd: usize, buf: &mut [u8]) -> Option<Vec<String>> {
     //     index += str.len() + 1;
     //     result.push(str);
     // }
-    let result = ls_prase2(fd,"./\0");
+    let result = ls_prase2(fd, "./\0");
     Some(result)
 }
 
@@ -172,9 +175,8 @@ pub fn get_time() -> isize {
     sys_get_time()
 }
 
-
 const BUF_SIZE: usize = 1024;
-pub fn ls_prase2(fd: usize,path: &str) ->Vec<String> {
+pub fn ls_prase2(fd: usize, path: &str) -> Vec<String> {
     let mut result: Vec<String> = Vec::new();
     assert!(fd >= 0, "open failed");
     let mut buf = [0u8; BUF_SIZE];

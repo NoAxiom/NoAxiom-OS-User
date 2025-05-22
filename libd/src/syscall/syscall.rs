@@ -40,7 +40,6 @@ syscall_id!(SYSCALL_EVENT_GET, 1004);
 syscall_id!(SYSCALL_LISTEN, 1005);
 syscall_id!(SYSCALL_CONNNET, 1006);
 
-
 // 传入系统调用号和相应系统调用及其参数
 syscall!(sys_fork, SYS_CLONE);
 
@@ -60,6 +59,12 @@ syscall!(
     *const usize,
     *const usize
 );
+
+// pub struct FdPair {
+//     fd: [u32; 2],
+// }
+
+syscall!(sys_pipe2, SYS_PIPE2, *mut u32, usize);
 
 syscall!(sys_sched_yield, SYS_SCHED_YIELD);
 
