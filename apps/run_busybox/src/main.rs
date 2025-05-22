@@ -14,8 +14,6 @@ use libd::{
 #[no_mangle]
 fn main() -> i32 {
     if fork() == 0 {
-        let path = format!("PATH=/\0");
-        let ld_lib_path = format!("LD_LIBRARY_PATH=/\0");
         let res = execve(
             "/glibc/busybox\0",
             &[
@@ -24,8 +22,8 @@ fn main() -> i32 {
                 core::ptr::null::<u8>(),
             ],
             &[
-                path.as_str().as_ptr(),
-                ld_lib_path.as_str().as_ptr(),
+                "PATH=/glibc\0".as_ptr(),
+                "LD_LIBRARY_PATH=/glibc\0".as_ptr(),
                 "TERM=screen\0".as_ptr(),
                 core::ptr::null::<u8>(),
             ],
@@ -40,8 +38,8 @@ fn main() -> i32 {
                     core::ptr::null::<u8>(),
                 ],
                 &[
-                    path.as_str().as_ptr(),
-                    ld_lib_path.as_str().as_ptr(),
+                    "PATH=/\0".as_ptr(),
+                    "LD_LIBRARY_PATH=/\0".as_ptr(),
                     "TERM=screen\0".as_ptr(),
                     core::ptr::null::<u8>(),
                 ],
