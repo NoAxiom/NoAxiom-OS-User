@@ -13,7 +13,8 @@ use libd::{
 
 #[no_mangle]
 fn main() -> i32 {
-    if fork() == 0 {
+    let pid = fork();
+    if pid == 0 {
         let res = execve(
             "/glibc/busybox\0",
             &[
@@ -52,8 +53,13 @@ fn main() -> i32 {
             let tid = wait(-1, &mut exit_code);
             if tid < 0 {
                 break;
+            } else if tid == pid {
+                println!("[init_proc] busybox exited, exit_code: {}", exit_code);
+                break;
+            } else {
+                // println!("[init_proc] wait tid: {}, exit_code: {}", tid,
+                // exit_code);
             }
-            println!("wait tid: {}, exit_code: {}", tid, exit_code);
         }
     }
     0
