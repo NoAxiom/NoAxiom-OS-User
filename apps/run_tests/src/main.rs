@@ -3,47 +3,53 @@
 
 extern crate alloc;
 
-use alloc::format;
+use libd::{lib_basepath::BUSYBOX, println, syscall::*};
 
-use libd::{
-    println,
-    syscall::{utils::OpenFlags, *},
-};
+const TEST_LIST: &[&str] = &[
+    // "./basic_testcode.sh\0",
+    // "./busybox_testcode.sh\0",
+    // "./lua_testcode.sh\0",
+    "./iozone_testcode.sh\0",
+    // "./cyclictest_testcode.sh\0",
+];
+
+fn run_sh(cmd: &str) {
+    let pid = fork();
+    if pid == 0 {
+        // default use musl busybox
+        execve(
+            BUSYBOX,
+            &[
+                "busybox\0".as_ptr(),
+                "sh\0".as_ptr(),
+                "-c\0".as_ptr(),
+                cmd.as_ptr(),
+                core::ptr::null::<u8>(),
+            ],
+            &[
+                "PATH=/\0".as_ptr(),
+                "TERM=screen\0".as_ptr(),
+                core::ptr::null::<u8>(),
+            ],
+        );
+    } else if pid > 0 {
+        let mut exit_code: usize = 0;
+        wait(pid, &mut exit_code);
+    } else {
+        println!("fork failed, ret: {}", pid);
+    }
+}
 
 #[no_mangle]
 fn main() -> i32 {
-    let dir_fd = open("/\0", OpenFlags::O_DIRECTORY);
-    if dir_fd < 0 {
-        println!("Failed to open root directory");
-        return 1;
-    }
-    let files = getdents(dir_fd as usize, &mut [0u8; 1024]).unwrap_or_default();
-    close(dir_fd as usize);
-    for file in files {
-        if file.ends_with(".sh") {
-            let path = format!("/{}", file);
-            println!("Executing script: {}", path);
-            let pid = fork();
-            if pid == 0 {
-                let ret = execve(
-                    &path,
-                    &[path.as_str().as_ptr(), core::ptr::null::<u8>()],
-                    &[
-                        "PATH=/\0".as_ptr(),
-                        "LD_LIBRARY_PATH=/\0".as_ptr(),
-                        core::ptr::null(),
-                    ],
-                );
-                println!("Failed to exec {}: return code {}", path, ret);
-                return 1;
-            } else if pid > 0 {
-                let mut exit_code = 0;
-                wait(pid, &mut exit_code);
-                println!("Script {} exited with code {}", path, exit_code);
-            } else {
-                println!("Failed to fork");
-            }
-        }
+    // chdir("/musl\0");
+    // for test in TEST_LIST {
+    //     run_sh(test);
+    // }
+
+    chdir("/glibc\0");
+    for test in TEST_LIST {
+        run_sh(test);
     }
     0
 }
