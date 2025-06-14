@@ -13,36 +13,29 @@ use libd::{
 // "./unixbench_testcode.sh\0" is not in contest
 const TEST_LIST: &[&str] = &[
     // PASSED in both glibc and musl with both riscv64 and loongarch64
-    // "./basic_testcode.sh\0",
-    // "./busybox_testcode.sh\0",
-    // "./lua_testcode.sh\0",
-    // "./iperf_testcode.sh\0", // remain process UNEXITED
-    // "./netperf_testcode.sh\0", // remain process UNEXITED
+    "./basic_testcode.sh\0",
+    "./busybox_testcode.sh\0",
+    "./lua_testcode.sh\0",
+    "./iozone_testcode.sh\0",
+    "./libcbench_testcode.sh\0",
 
     // UNTESTED
     // "./lmbench_testcode.sh\0",
     // "./ltp_testcode.sh\0",
 
-    // PASS: musl-rv musl-la
-    // FAIL: glibc-rv glibc-la
-    // "./iozone_testcode.sh\0", // page_table fault
-    // "./libcbench_testcode.sh\0",
-    /*
-    [ERROR, HART0, TID6] invalid syscall id: 435
-    [ERROR, HART0, TID6] [175981693] kernel/src/syscall/process.rs:301 Errno: [EPERM] Operation not permitted
-    */
-
     // PASS:
     // FAIL: glibc-rv glibc-la musl-rv musl-la
     // "./cyclictest_testcode.sh\0", // miss some files, fs error
-    // "./libctest_testcode.sh\0",
+    "./libctest_testcode.sh\0",
+
+    // PASS, but it remains processes UNEXITED
+    "./iperf_testcode.sh\0",
+    "./netperf_testcode.sh\0",
+
     /*
     (glibc errors more)
     socket error
     statx error
-
-    [ERROR, HART0, TID6] invalid syscall id: 435
-    [ERROR, HART0, TID6] [2874513002] kernel/src/syscall/process.rs:301 Errno: [EPERM] Operation not permitted
      */
 ];
 
