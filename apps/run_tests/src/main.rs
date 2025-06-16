@@ -11,39 +11,65 @@ use libd::{
 
 // tested in one hart
 // "./unixbench_testcode.sh\0" is not in contest
-const TEST_LIST: &[&str] = &[
-    // PASSED in both glibc and musl with both riscv64 and loongarch64
-    // "./basic_testcode.sh\0",
-    // "./busybox_testcode.sh\0",
-    // "./lua_testcode.sh\0",
-    // "./iperf_testcode.sh\0", // remain process UNEXITED
-    // "./netperf_testcode.sh\0", // remain process UNEXITED
-
-    // UNTESTED
-    // "./lmbench_testcode.sh\0",
+// fixme: there remains unexited processes in iperf_testcode & netperf_testcode
+#[allow(unused)]
+const TEST_LIST_RV_MUSL: &[&str] = &[
+    "./basic_testcode.sh\0",
+    "./busybox_testcode.sh\0",
+    "./lua_testcode.sh\0",
+    "./iozone_testcode.sh\0",
+    "./libcbench_testcode.sh\0",
+    "./libctest_testcode.sh\0",
+    "./cyclictest_testcode.sh\0",
+    "./lmbench_testcode.sh\0",
+    "./iperf_testcode.sh\0",
+    "./netperf_testcode.sh\0",
     // "./ltp_testcode.sh\0",
+];
 
-    // PASS: musl-rv musl-la
-    // FAIL: glibc-rv glibc-la
-    // "./iozone_testcode.sh\0", // page_table fault
-    // "./libcbench_testcode.sh\0",
-    /*
-    [ERROR, HART0, TID6] invalid syscall id: 435
-    [ERROR, HART0, TID6] [175981693] kernel/src/syscall/process.rs:301 Errno: [EPERM] Operation not permitted
-    */
+#[allow(unused)]
+const TEST_LIST_RV_GLIBC: &[&str] = &[
+    "./basic_testcode.sh\0",
+    "./busybox_testcode.sh\0",
+    "./lua_testcode.sh\0",
+    "./iozone_testcode.sh\0",
+    "./libcbench_testcode.sh\0",
+    "./libctest_testcode.sh\0",
+    "./cyclictest_testcode.sh\0",
+    "./lmbench_testcode.sh\0",
+    "./iperf_testcode.sh\0",
+    "./netperf_testcode.sh\0",
+    // "./ltp_testcode.sh\0",
+];
 
-    // PASS:
-    // FAIL: glibc-rv glibc-la musl-rv musl-la
-    // "./cyclictest_testcode.sh\0", // miss some files, fs error
-    // "./libctest_testcode.sh\0",
-    /*
-    (glibc errors more)
-    socket error
-    statx error
+#[allow(unused)]
+const TEST_LIST_LA_MUSL: &[&str] = &[
+    "./basic_testcode.sh\0",
+    "./busybox_testcode.sh\0",
+    "./lua_testcode.sh\0",
+    "./iozone_testcode.sh\0",
+    "./libcbench_testcode.sh\0",
+    "./libctest_testcode.sh\0",
+    // "./cyclictest_testcode.sh\0", // cannot execute
+    "./lmbench_testcode.sh\0",
+    "./iperf_testcode.sh\0",
+    "./netperf_testcode.sh\0",
+    // "./ltp_testcode.sh\0",
+];
 
-    [ERROR, HART0, TID6] invalid syscall id: 435
-    [ERROR, HART0, TID6] [2874513002] kernel/src/syscall/process.rs:301 Errno: [EPERM] Operation not permitted
-     */
+#[allow(unused)]
+const TEST_LIST_LA_GLIBC: &[&str] = &[
+    "./basic_testcode.sh\0",
+    "./busybox_testcode.sh\0",
+    "./lua_testcode.sh\0",
+    "./iozone_testcode.sh\0",
+    "./libcbench_testcode.sh\0",
+    "./libctest_testcode.sh\0",
+    // "./cyclictest_testcode.sh\0", // kernel panic (unrecognized pagefault)
+    "./lmbench_testcode.sh\0",
+    "./iperf_testcode.sh\0",
+    "./netperf_testcode.sh\0",
+    // "./ltp_testcode.sh\0",
 ];
 
 fn run_sh(cmd: &str) {
@@ -140,17 +166,35 @@ fn init() {
     }
 }
 
+fn run_tests() {
+    #[cfg(target_arch = "riscv64")]
+    {
+        chdir("/musl\0");
+        for test in TEST_LIST_RV_MUSL {
+            run_sh(test);
+        }
+        chdir("/glibc\0");
+        for test in TEST_LIST_RV_GLIBC {
+            run_sh(test);
+        }
+    }
+    #[cfg(target_arch = "loongarch64")]
+    {
+        chdir("/musl\0");
+        for test in TEST_LIST_LA_MUSL {
+            run_sh(test);
+        }
+        chdir("/glibc\0");
+        for test in TEST_LIST_LA_GLIBC {
+            run_sh(test);
+        }
+    }
+}
+
 #[no_mangle]
 fn main() -> i32 {
+    println!("[init_proc] Hello, NoAxiom!");
     init();
-    chdir("/musl\0");
-    for test in TEST_LIST {
-        run_sh(test);
-    }
-
-    chdir("/glibc\0");
-    for test in TEST_LIST {
-        run_sh(test);
-    }
+    run_tests();
     0
 }
