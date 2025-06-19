@@ -9,67 +9,22 @@ use libd::{
     syscall::{utils::OpenFlags, *},
 };
 
-// tested in one hart
-// "./unixbench_testcode.sh\0" is not in contest
-// fixme: there remains unexited processes in iperf_testcode & netperf_testcode
-#[allow(unused)]
-const TEST_LIST_RV_MUSL: &[&str] = &[
-    "./basic_testcode.sh\0",
-    "./busybox_testcode.sh\0",
-    "./lua_testcode.sh\0",
-    "./iozone_testcode.sh\0",
-    "./libcbench_testcode.sh\0",
-    "./libctest_testcode.sh\0",
-    "./cyclictest_testcode.sh\0",
-    "./lmbench_testcode.sh\0",
-    "./iperf_testcode.sh\0",
-    "./netperf_testcode.sh\0",
-    // "./ltp_testcode.sh\0",
-];
-
-#[allow(unused)]
-const TEST_LIST_RV_GLIBC: &[&str] = &[
-    "./basic_testcode.sh\0",
-    "./busybox_testcode.sh\0",
-    "./lua_testcode.sh\0",
-    "./iozone_testcode.sh\0",
-    "./libcbench_testcode.sh\0",
-    "./libctest_testcode.sh\0",
-    "./cyclictest_testcode.sh\0",
-    "./lmbench_testcode.sh\0",
-    "./iperf_testcode.sh\0",
-    "./netperf_testcode.sh\0",
-    // "./ltp_testcode.sh\0",
-];
-
-#[allow(unused)]
-const TEST_LIST_LA_MUSL: &[&str] = &[
-    "./basic_testcode.sh\0",
-    "./busybox_testcode.sh\0",
-    "./lua_testcode.sh\0",
-    "./iozone_testcode.sh\0",
-    "./libcbench_testcode.sh\0",
-    "./libctest_testcode.sh\0",
-    // "./cyclictest_testcode.sh\0", // cannot execute
-    "./lmbench_testcode.sh\0",
-    "./iperf_testcode.sh\0",
-    "./netperf_testcode.sh\0",
-    // "./ltp_testcode.sh\0",
-];
-
-#[allow(unused)]
-const TEST_LIST_LA_GLIBC: &[&str] = &[
-    "./basic_testcode.sh\0",
-    "./busybox_testcode.sh\0",
-    "./lua_testcode.sh\0",
-    "./iozone_testcode.sh\0",
-    "./libcbench_testcode.sh\0",
-    "./libctest_testcode.sh\0",
-    // "./cyclictest_testcode.sh\0", // kernel panic (unrecognized pagefault)
-    "./lmbench_testcode.sh\0",
-    "./iperf_testcode.sh\0",
-    "./netperf_testcode.sh\0",
-    // "./ltp_testcode.sh\0",
+/// testpoints for all arch and lib
+/// rv.musl / rv.glibc / la.musl / la.glibc
+const TEST_POINTS: &[(&str, bool, bool, bool, bool)] = &[
+    //                arch: riscv64      | loongarch64
+    //                lib:  musl | glibc | musl | glibc
+    ("./basic_testcode.sh\0", true, true, true, true),
+    ("./busybox_testcode.sh\0", true, true, true, true),
+    ("./lua_testcode.sh\0", true, true, true, true),
+    ("./iozone_testcode.sh\0", true, true, true, true),
+    ("./libcbench_testcode.sh\0", true, true, true, true),
+    ("./libctest_testcode.sh\0", true, true, true, true),
+    ("./lmbench_testcode.sh\0", true, true, true, true),
+    ("./iperf_testcode.sh\0", true, true, true, true),
+    ("./netperf_testcode.sh\0", true, true, true, true),
+    ("./cyclictest_testcode.sh\0", true, true, false, true),
+    // "./ltp_testcode.sh\0", // not supported
 ];
 
 fn run_sh(cmd: &str) {
@@ -169,24 +124,28 @@ fn init() {
 fn run_tests() {
     #[cfg(target_arch = "riscv64")]
     {
-        chdir("/musl\0");
-        for test in TEST_LIST_RV_MUSL {
-            run_sh(test);
-        }
-        chdir("/glibc\0");
-        for test in TEST_LIST_RV_GLIBC {
-            run_sh(test);
+        for &(test, rvm, rvg, _lam, _lag) in TEST_POINTS {
+            if rvm {
+                chdir("/musl\0");
+                run_sh(test);
+            }
+            if rvg {
+                chdir("/glibc\0");
+                run_sh(test);
+            }
         }
     }
     #[cfg(target_arch = "loongarch64")]
     {
-        chdir("/musl\0");
-        for test in TEST_LIST_LA_MUSL {
-            run_sh(test);
-        }
-        chdir("/glibc\0");
-        for test in TEST_LIST_LA_GLIBC {
-            run_sh(test);
+        for &(test, _rvm, _rvg, lam, lag) in TEST_POINTS {
+            if lam {
+                chdir("/musl\0");
+                run_sh(test);
+            }
+            if lag {
+                chdir("/glibc\0");
+                run_sh(test);
+            }
         }
     }
 }
@@ -196,5 +155,6 @@ fn main() -> i32 {
     println!("[init_proc] Hello, NoAxiom!");
     init();
     run_tests();
+    println!("[init_proc] Test finished!");
     0
 }
