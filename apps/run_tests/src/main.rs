@@ -41,7 +41,7 @@ fn run_sh(cmd: &str) {
                 core::ptr::null::<u8>(),
             ],
             &[
-                "PATH=/\0".as_ptr(),
+                "PATH=/:/bin\0".as_ptr(),
                 "TERM=screen\0".as_ptr(),
                 core::ptr::null::<u8>(),
             ],
@@ -97,6 +97,7 @@ fn init() {
         copy_file("/glibc/lib/libc.so\0", "/lib/libc.so.6\0");
         copy_file("/glibc/lib/libm.so\0", "/lib/libm.so.6\0");
         copy_file("/musl/lib/libc.so\0", "/lib/ld-musl-riscv64-sf.so.1\0");
+        run_sh("/musl/busybox --install /bin\0");
         println!("[riscv64] init glibc and musl libraries");
     }
     #[cfg(target_arch = "loongarch64")]
@@ -117,6 +118,7 @@ fn init() {
             "/musl/lib/libc.so\0",
             "/lib64/ld-musl-loongarch-lp64d.so.1\0",
         );
+        run_sh("/musl/busybox --install /bin\0");
         println!("[loongarch64] init glibc and musl libraries");
     }
 }
