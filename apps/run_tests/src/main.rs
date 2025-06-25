@@ -14,17 +14,17 @@ use libd::{
 const TEST_POINTS: &[(&str, bool, bool, bool, bool)] = &[
     //                arch: riscv64      | loongarch64
     //                lib:  musl | glibc | musl | glibc
-    ("./basic_testcode.sh\0", true, true, true, true),
-    ("./busybox_testcode.sh\0", true, true, true, true),
-    ("./lua_testcode.sh\0", true, true, true, true),
-    ("./iozone_testcode.sh\0", true, true, true, true),
-    ("./libcbench_testcode.sh\0", true, true, true, true),
-    ("./libctest_testcode.sh\0", true, true, true, true),
-    ("./lmbench_testcode.sh\0", true, true, true, true),
-    ("./iperf_testcode.sh\0", true, true, true, true),
-    ("./netperf_testcode.sh\0", true, true, true, true),
-    ("./cyclictest_testcode.sh\0", true, true, false, true),
-    // "./ltp_testcode.sh\0", // not supported
+    // ("./basic_testcode.sh\0", true, true, true, true),
+    // ("./busybox_testcode.sh\0", true, true, true, true),
+    // ("./lua_testcode.sh\0", true, true, true, true),
+    // ("./iozone_testcode.sh\0", true, true, true, true),
+    // ("./libcbench_testcode.sh\0", true, true, true, true),
+    // ("./libctest_testcode.sh\0", true, true, true, true),
+    // ("./lmbench_testcode.sh\0", true, true, true, true),
+    // ("./iperf_testcode.sh\0", true, true, true, true),
+    // ("./netperf_testcode.sh\0", true, true, true, true),
+    // ("./cyclictest_testcode.sh\0", true, true, false, true),
+    ("./ltp_testcode.sh\0", true, true, true, true),
 ];
 
 fn run_sh(cmd: &str) {
@@ -97,6 +97,7 @@ fn init() {
         copy_file("/glibc/lib/libc.so\0", "/lib/libc.so.6\0");
         copy_file("/glibc/lib/libm.so\0", "/lib/libm.so.6\0");
         copy_file("/musl/lib/libc.so\0", "/lib/ld-musl-riscv64-sf.so.1\0");
+        copy_file("/musl/lib/libc.so\0", "/lib/ld-musl-riscv64.so.1\0");
         run_sh("/musl/busybox --install /bin\0");
         println!("[riscv64] init glibc and musl libraries");
     }
