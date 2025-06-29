@@ -126,6 +126,21 @@ fn init() {
         run_sh("/musl/busybox --install /bin\0");
         println!("[loongarch64] init glibc and musl libraries");
     }
+
+    run_sh("mkdir -p /etc");
+
+    run_sh("echo 'ip      0       IP      # Internet protocol' > /etc/protocols");
+    run_sh("echo 'icmp    1       ICMP    # Internet Control Message Protocol' >> /etc/protocols");
+    run_sh("echo 'tcp     6       TCP     # Transmission Control Protocol' >> /etc/protocols");
+    run_sh("echo 'udp     17      UDP     # User Datagram Protocol' >> /etc/protocols");
+
+    run_sh("echo 'hosts: files dns' > /etc/nsswitch.conf");
+    run_sh("echo 'networks: files' >> /etc/nsswitch.conf");
+    run_sh("echo 'protocols: files' >> /etc/nsswitch.conf");
+    run_sh("echo 'services: files' >> /etc/nsswitch.conf");
+
+    run_sh("echo 'root:x:0:0:root:/root:/bin/bash' > /etc/passwd");
+    run_sh("echo 'nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin' >/etc/passwd ");
 }
 
 fn run_tests() {
