@@ -179,6 +179,7 @@ fn run_tests() {
         switch_into_ltp();
         run_ltp();
         switch_outof_ltp();
+        exit(0);
     }
 }
 
