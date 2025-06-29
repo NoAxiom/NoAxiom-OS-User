@@ -1,8 +1,11 @@
 #![no_std]
 #![no_main]
 
-mod ltp_rv;
-mod ltp_script;
+mod ltp;
+#[cfg(target_arch = "loongarch64")]
+mod ltp_script_la;
+#[cfg(target_arch = "riscv64")]
+mod ltp_script_rv;
 extern crate alloc;
 
 use libd::{
@@ -12,7 +15,7 @@ use libd::{
     utils::{switch_into_ltp, switch_outof_ltp},
 };
 
-use crate::ltp_rv::run_ltp;
+use crate::ltp::run_ltp;
 
 /// testpoints for all arch and lib
 /// rv.musl / rv.glibc / la.musl / la.glibc
@@ -157,6 +160,9 @@ fn run_tests() {
                 run_sh(test);
             }
         }
+        switch_into_ltp();
+        run_ltp();
+        switch_outof_ltp();
     }
     #[cfg(target_arch = "loongarch64")]
     {
@@ -170,6 +176,9 @@ fn run_tests() {
                 run_sh(test);
             }
         }
+        switch_into_ltp();
+        run_ltp();
+        switch_outof_ltp();
     }
 }
 
@@ -178,9 +187,6 @@ fn main() -> i32 {
     println!("[init_proc] Hello, NoAxiom!");
     init();
     run_tests();
-    switch_into_ltp();
-    run_ltp();
-    switch_outof_ltp();
     println!("[init_proc] Test finished!");
     0
 }

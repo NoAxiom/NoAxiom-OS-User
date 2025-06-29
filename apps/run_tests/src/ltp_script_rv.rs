@@ -1,8 +1,9 @@
+#[allow(unused)]
 pub const REMOVED: &str = r#####"
 socket01
 "#####;
 
-pub const LTP_RV: &str = r#####"
+pub const LTP_SH: &str = r#####"
 echo "start to test ltp in musl"
 cd /
 cd /musl/ltp/testcases/bin
