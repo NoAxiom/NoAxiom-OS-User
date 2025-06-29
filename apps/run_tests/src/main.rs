@@ -9,6 +9,7 @@ use libd::{
     lib_basepath::BUSYBOX,
     println,
     syscall::{utils::OpenFlags, *},
+    utils::{switch_into_ltp, switch_outof_ltp},
 };
 
 use crate::ltp_rv::run_ltp;
@@ -177,7 +178,9 @@ fn main() -> i32 {
     println!("[init_proc] Hello, NoAxiom!");
     init();
     run_tests();
+    switch_into_ltp();
     run_ltp();
+    switch_outof_ltp();
     println!("[init_proc] Test finished!");
     0
 }

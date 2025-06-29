@@ -175,6 +175,10 @@ pub fn get_time() -> isize {
     sys_get_time()
 }
 
+pub fn ioctl(fd: usize, request: usize, arg: usize) {
+    sys_ioctl(fd, request, arg);
+}
+
 const BUF_SIZE: usize = 1024;
 pub fn ls_prase2(fd: usize, path: &str) -> Vec<String> {
     let mut result: Vec<String> = Vec::new();

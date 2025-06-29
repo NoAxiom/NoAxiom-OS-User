@@ -39,6 +39,7 @@ syscall_id!(SYSCALL_FRAMEBUFFER_FLUSH, 1003);
 syscall_id!(SYSCALL_EVENT_GET, 1004);
 syscall_id!(SYSCALL_LISTEN, 1005);
 syscall_id!(SYSCALL_CONNNET, 1006);
+syscall_id!(SYS_IOCTL, 29);
 
 // 传入系统调用号和相应系统调用及其参数
 syscall!(sys_fork, SYS_CLONE);
@@ -99,3 +100,5 @@ syscall!(sys_connect, SYSCALL_CONNNET, *const u8);
 syscall!(sys_close, SYS_CLOSE, usize);
 
 syscall!(sys_get_time, SYS_GETTIMEOFDAY);
+
+syscall!(sys_ioctl, SYS_IOCTL, usize, usize, usize);
