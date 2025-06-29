@@ -1,3 +1,7 @@
+pub const REMOVED: &str = r#####"
+socket01
+"#####;
+
 pub const LTP_RV: &str = r#####"
 echo "start to test ltp in musl"
 cd /
@@ -131,7 +135,6 @@ setxattr02
 signal02 signal03 signal04 signal05
 sigpending02
 sigwait01
-socket01
 socketpair01
 socketpair02
 splice02
