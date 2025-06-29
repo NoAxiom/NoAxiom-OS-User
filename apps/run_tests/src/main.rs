@@ -1,6 +1,8 @@
 #![no_std]
 #![no_main]
 
+mod ltp_rv;
+mod ltp_script;
 extern crate alloc;
 
 use libd::{
@@ -8,6 +10,8 @@ use libd::{
     println,
     syscall::{utils::OpenFlags, *},
 };
+
+use crate::ltp_rv::run_ltp;
 
 /// testpoints for all arch and lib
 /// rv.musl / rv.glibc / la.musl / la.glibc
@@ -24,7 +28,7 @@ const TEST_POINTS: &[(&str, bool, bool, bool, bool)] = &[
     // ("./iperf_testcode.sh\0", true, true, true, true),
     // ("./netperf_testcode.sh\0", true, true, true, true),
     // ("./cyclictest_testcode.sh\0", true, true, false, true),
-    ("./ltp_testcode.sh\0", true, true, true, true),
+    // ("./ltp_testcode.sh\0", true, true, true, true),
 ];
 
 fn run_sh(cmd: &str) {
@@ -158,6 +162,7 @@ fn main() -> i32 {
     println!("[init_proc] Hello, NoAxiom!");
     init();
     run_tests();
+    run_ltp();
     println!("[init_proc] Test finished!");
     0
 }
