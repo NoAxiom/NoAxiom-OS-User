@@ -1,4 +1,4 @@
-pub const LTP_RV: &str = r#"
+pub const LTP_RV: &str = r#####"
 echo "start to test ltp in musl"
 cd /
 cd /musl/ltp/testcases/bin
@@ -154,7 +154,7 @@ utsname01 utsname04
 
 wait01 wait02 wait401
 waitpid01 waitpid03
-write01 write02 write06\#\#\#\#
+write01 write02 write06####
 "
 set -- $file_list
 
@@ -162,7 +162,7 @@ echo "start to test ltp in musl"
 cd /
 cd /musl/ltp/testcases/bin
 
-echo "\#\#\#\# OS COMP TEST GROUP START ltp-musl \#\#\#\#"
+echo "#### OS COMP TEST GROUP START ltp-musl ####"
 
 for file in $@; do
   # 跳过目录，仅处理文件
@@ -179,14 +179,14 @@ for file in $@; do
 done
 
 
-echo "\#\#\#\# OS COMP TEST GROUP END ltp-musl \#\#\#\#"
+echo "#### OS COMP TEST GROUP END ltp-musl ####"
 
 echo "start to test ltp in glibc"
 cd /
 cd /glibc/ltp/testcases/bin
 
 
-echo "\#\#\#\# OS COMP TEST GROUP START ltp-glibc \#\#\#\#"
+echo "#### OS COMP TEST GROUP START ltp-glibc ####"
 
 for file in $@; do
   if [ -f "$file" ]; then
@@ -200,5 +200,5 @@ for file in $@; do
 done
 
 
-echo "\#\#\#\# OS COMP TEST GROUP END ltp-glibc \#\#\#\#"
-"#;
+echo "#### OS COMP TEST GROUP END ltp-glibc ####"
+"#####;
