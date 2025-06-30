@@ -22,16 +22,16 @@ use crate::ltp::run_ltp;
 const TEST_POINTS: &[(&str, bool, bool, bool, bool)] = &[
     //                arch: riscv64      | loongarch64
     //                lib:  musl | glibc | musl | glibc
-    // ("./basic_testcode.sh\0", true, true, true, true),
-    // ("./busybox_testcode.sh\0", true, true, true, true),
-    // ("./lua_testcode.sh\0", true, true, true, true),
-    // ("./iozone_testcode.sh\0", true, true, true, true),
-    // ("./libcbench_testcode.sh\0", true, true, true, true),
-    // ("./libctest_testcode.sh\0", true, true, true, true),
-    // ("./lmbench_testcode.sh\0", true, true, true, true),
-    // ("./iperf_testcode.sh\0", true, true, true, true),
-    // ("./netperf_testcode.sh\0", true, true, true, true),
-    // ("./cyclictest_testcode.sh\0", true, true, false, true),
+    ("./basic_testcode.sh\0", true, true, true, true),
+    ("./busybox_testcode.sh\0", true, true, true, true),
+    ("./lua_testcode.sh\0", true, true, true, true),
+    ("./iozone_testcode.sh\0", true, true, true, true),
+    ("./libcbench_testcode.sh\0", true, true, true, true),
+    ("./libctest_testcode.sh\0", true, true, true, true),
+    ("./lmbench_testcode.sh\0", true, true, true, true),
+    ("./iperf_testcode.sh\0", true, true, true, true),
+    ("./netperf_testcode.sh\0", true, true, true, true),
+    // ("./cyclictest_testcode.sh\0", false, false, false, false),
     // ("./ltp_testcode.sh\0", true, true, true, true),
 ];
 

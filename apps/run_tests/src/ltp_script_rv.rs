@@ -1,6 +1,7 @@
 #[allow(unused)]
 pub const REMOVED: &str = r#####"
 socket01
+fcntl34 fcntl34_64
 fcntl36 fcntl36_64
 "#####;
 
@@ -55,7 +56,7 @@ fchmodat01 fchmodat02
 fchown01 fchown02 fchown03 fchown04 fchown05
 fchownat01 fchownat02
 fcntl02 fcntl02_64 fcntl03 fcntl03_64 fcntl04 fcntl04_64 fcntl05 fcntl05_64 fcntl08 fcntl08_64
-fcntl12 fcntl12_64 fcntl29 fcntl29_64 fcntl34 fcntl34_64
+fcntl12 fcntl12_64 fcntl29 fcntl29_64
 flistxattr03
 flock01 flock03 flock04 flock06
 fork01 fork03 fork04 fork07 fork08 fpathconf01
@@ -185,26 +186,25 @@ done
 
 
 echo "#### OS COMP TEST GROUP END ltp-musl ####"
+
+echo "start to test ltp in glibc"
+cd /
+cd /glibc/ltp/testcases/bin
+
+
+echo "#### OS COMP TEST GROUP START ltp-glibc ####"
+
+for file in $@; do
+  if [ -f "$file" ]; then
+    echo "RUN LTP CASE $(basename "$file")"
+
+    "./$file"
+    ret=$?
+
+    echo "FAIL LTP CASE $(basename "$file") : $ret"
+  fi
+done
+
+
+echo "#### OS COMP TEST GROUP END ltp-glibc ####"
 "#####;
-
-// echo "start to test ltp in glibc"
-// cd /
-// cd /glibc/ltp/testcases/bin
-
-
-// echo "#### OS COMP TEST GROUP START ltp-glibc ####"
-
-// for file in $@; do
-//   if [ -f "$file" ]; then
-//     echo "RUN LTP CASE $(basename "$file")"
-
-//     "./$file"
-//     ret=$?
-
-//     echo "FAIL LTP CASE $(basename "$file") : $ret"
-//   fi
-// done
-
-
-// echo "#### OS COMP TEST GROUP END ltp-glibc ####"
-// "#####;
