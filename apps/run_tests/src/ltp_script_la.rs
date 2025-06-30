@@ -3,8 +3,10 @@ pub const REMOVED: &str = r#####"
 dio_sparse
 socket01
 mtest01
+lftest
 fcntl34 fcntl34_64
 fcntl36 fcntl36_64
+write01 write02 write06####
 "#####;
 
 pub const LTP_SH: &str = r#####"
@@ -91,7 +93,6 @@ io_uring01
 kcmp01 kcmp03
 keyctl04
 
-lftest
 link02 link04 link05
 listxattr03 llistxattr03
 llseek01 llseek02 llseek03
@@ -160,7 +161,6 @@ utsname01 utsname04
 
 wait01 wait02 wait401
 waitpid01 waitpid03
-write01 write02 write06####
 "
 set -- $file_list
 

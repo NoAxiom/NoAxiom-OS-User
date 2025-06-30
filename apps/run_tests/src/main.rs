@@ -35,6 +35,10 @@ const TEST_POINTS: &[(&str, bool, bool, bool, bool)] = &[
     // ("./ltp_testcode.sh\0", true, true, true, true),
 ];
 
+const TEST_LAST: &[(&str, bool, bool, bool, bool)] = &[
+    ("./cyclictest_testcode.sh\0", false, false, false, false),
+];
+
 fn run_sh(cmd: &str) {
     let pid = fork();
     if pid == 0 {
@@ -163,6 +167,17 @@ fn run_tests() {
         switch_into_ltp();
         run_ltp();
         switch_outof_ltp();
+        for &(test, _rvm, _rvg, lam, lag) in TEST_LAST {
+            if lam {
+                chdir("/musl\0");
+                run_sh(test);
+            }
+            if lag {
+                chdir("/glibc\0");
+                run_sh(test);
+            }
+        }
+        exit(0);
     }
     #[cfg(target_arch = "loongarch64")]
     {
@@ -179,6 +194,16 @@ fn run_tests() {
         switch_into_ltp();
         run_ltp();
         switch_outof_ltp();
+        for &(test, _rvm, _rvg, lam, lag) in TEST_LAST {
+            if lam {
+                chdir("/musl\0");
+                run_sh(test);
+            }
+            if lag {
+                chdir("/glibc\0");
+                run_sh(test);
+            }
+        }
         exit(0);
     }
 }

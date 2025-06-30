@@ -1,6 +1,8 @@
 #[allow(unused)]
 pub const REMOVED: &str = r#####"
+dio_sparse
 socket01
+lftest
 fcntl34 fcntl34_64
 fcntl36 fcntl36_64
 "#####;
@@ -33,7 +35,6 @@ close01 close02
 confstr01
 creat01 creat03 creat05 creat08
 
-dio_sparse
 dup01 dup02 dup03 dup04 dup06 dup07 dup202 dup203 dup204 dup206 dup207 dup3_01 dup3_02
 
 epoll_create01 epoll_create1_01
@@ -90,7 +91,6 @@ io_uring01
 kcmp01 kcmp03
 keyctl04
 
-lftest
 link02 link04 link05
 listxattr03 llistxattr03
 llseek01 llseek02 llseek03
