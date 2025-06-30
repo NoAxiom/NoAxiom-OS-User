@@ -35,9 +35,8 @@ const TEST_POINTS: &[(&str, bool, bool, bool, bool)] = &[
     // ("./ltp_testcode.sh\0", true, true, true, true),
 ];
 
-const TEST_LAST: &[(&str, bool, bool, bool, bool)] = &[
-    ("./cyclictest_testcode.sh\0", false, false, false, false),
-];
+const TEST_LAST: &[(&str, bool, bool, bool, bool)] =
+    &[("./cyclictest_testcode.sh\0", false, false, false, false)];
 
 fn run_sh(cmd: &str) {
     let pid = fork();
@@ -53,7 +52,7 @@ fn run_sh(cmd: &str) {
                 core::ptr::null::<u8>(),
             ],
             &[
-                "PATH=/:/bin\0".as_ptr(),
+                "PATH=/bin\0".as_ptr(),
                 "TERM=screen\0".as_ptr(),
                 core::ptr::null::<u8>(),
             ],
@@ -135,20 +134,22 @@ fn init() {
         println!("[loongarch64] init glibc and musl libraries");
     }
 
-    run_sh("mkdir -p /etc");
+    run_sh("mkdir -p /etc\0");
 
-    run_sh("echo 'ip      0       IP      # Internet protocol' > /etc/protocols");
-    run_sh("echo 'icmp    1       ICMP    # Internet Control Message Protocol' >> /etc/protocols");
-    run_sh("echo 'tcp     6       TCP     # Transmission Control Protocol' >> /etc/protocols");
-    run_sh("echo 'udp     17      UDP     # User Datagram Protocol' >> /etc/protocols");
+    run_sh("echo 'ip      0       IP      # Internet protocol' > /etc/protocols\0");
+    run_sh(
+        "echo 'icmp    1       ICMP    # Internet Control Message Protocol' >> /etc/protocols\0",
+    );
+    run_sh("echo 'tcp     6       TCP     # Transmission Control Protocol' >> /etc/protocols\0");
+    run_sh("echo 'udp     17      UDP     # User Datagram Protocol' >> /etc/protocols\0");
 
-    run_sh("echo 'hosts: files dns' > /etc/nsswitch.conf");
-    run_sh("echo 'networks: files' >> /etc/nsswitch.conf");
-    run_sh("echo 'protocols: files' >> /etc/nsswitch.conf");
-    run_sh("echo 'services: files' >> /etc/nsswitch.conf");
+    run_sh("echo 'hosts: files dns' > /etc/nsswitch.conf\0");
+    run_sh("echo 'networks: files' >> /etc/nsswitch.conf\0");
+    run_sh("echo 'protocols: files' >> /etc/nsswitch.conf\0");
+    run_sh("echo 'services: files' >> /etc/nsswitch.conf\0");
 
-    run_sh("echo 'root:x:0:0:root:/root:/bin/bash' > /etc/passwd");
-    run_sh("echo 'nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin' >/etc/passwd ");
+    run_sh("echo 'root:x:0:0:root:/root:/bin/bash' > /etc/passwd\0");
+    run_sh("echo 'nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin' >/etc/passwd \0");
 }
 
 fn run_tests() {
@@ -167,16 +168,16 @@ fn run_tests() {
         switch_into_ltp();
         run_ltp();
         switch_outof_ltp();
-        for &(test, _rvm, _rvg, lam, lag) in TEST_LAST {
-            if lam {
-                chdir("/musl\0");
-                run_sh(test);
-            }
-            if lag {
-                chdir("/glibc\0");
-                run_sh(test);
-            }
-        }
+        // for &(test, rvm, rvg, _lam, _lag) in TEST_LAST {
+        //     if rvm {
+        //         chdir("/musl\0");
+        //         run_sh(test);
+        //     }
+        //     if rvg {
+        //         chdir("/glibc\0");
+        //         run_sh(test);
+        //     }
+        // }
         exit(0);
     }
     #[cfg(target_arch = "loongarch64")]
@@ -194,16 +195,16 @@ fn run_tests() {
         switch_into_ltp();
         run_ltp();
         switch_outof_ltp();
-        for &(test, _rvm, _rvg, lam, lag) in TEST_LAST {
-            if lam {
-                chdir("/musl\0");
-                run_sh(test);
-            }
-            if lag {
-                chdir("/glibc\0");
-                run_sh(test);
-            }
-        }
+        // for &(test, _rvm, _rvg, lam, lag) in TEST_LAST {
+        //     if lam {
+        //         chdir("/musl\0");
+        //         run_sh(test);
+        //     }
+        //     if lag {
+        //         chdir("/glibc\0");
+        //         run_sh(test);
+        //     }
+        // }
         exit(0);
     }
 }
