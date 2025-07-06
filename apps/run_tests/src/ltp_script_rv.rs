@@ -2,6 +2,7 @@
 pub const REMOVED: &str = r#####"
 dio_sparse
 socket01
+mtest01
 lftest
 fcntl34 fcntl34_64
 fcntl36 fcntl36_64
@@ -106,7 +107,6 @@ mkdirat01
 mlock01 mlock04
 mmap02 mmap05 mmap06 mmap09 mmap19
 mprotect05
-mtest01
 munlock01
 name_to_handle_at01
 

@@ -286,13 +286,3 @@ pub fn clip_segment(line: &Line, rect: &Rectangle) -> Line {
         Line::new(p1, p3)
     }
 }
-
-const INTOTESTCASE: usize = 0x114514;
-const OUTOFTESTCASE: usize = 0x1919810;
-const IOCTL_TEST_LTP: usize = 0;
-pub fn switch_into_ltp() {
-    crate::syscall::ioctl(1, INTOTESTCASE, IOCTL_TEST_LTP)
-}
-pub fn switch_outof_ltp() {
-    crate::syscall::ioctl(1, OUTOFTESTCASE, IOCTL_TEST_LTP)
-}

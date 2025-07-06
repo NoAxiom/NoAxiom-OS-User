@@ -9,10 +9,13 @@ mod ltp_script_rv;
 extern crate alloc;
 
 use libd::{
+    ioctl::{
+        ioctl_log::{switch_log_off, switch_log_on},
+        ioctl_ltp::{switch_into_ltp, switch_outof_ltp},
+    },
     lib_basepath::BUSYBOX,
     println,
     syscall::{utils::OpenFlags, *},
-    utils::{switch_into_ltp, switch_outof_ltp},
 };
 
 use crate::ltp::run_ltp;
@@ -28,9 +31,9 @@ const TEST_POINTS: &[(&str, bool, bool, bool, bool)] = &[
     ("./iozone_testcode.sh\0", true, true, true, true),
     ("./libcbench_testcode.sh\0", true, true, true, true),
     ("./libctest_testcode.sh\0", true, true, true, true),
-    ("./lmbench_testcode.sh\0", true, true, true, true),
     ("./iperf_testcode.sh\0", true, true, true, true),
     ("./netperf_testcode.sh\0", true, true, true, true),
+    ("./lmbench_testcode.sh\0", true, true, true, true),
     // ("./cyclictest_testcode.sh\0", false, false, false, false),
     // ("./ltp_testcode.sh\0", true, true, true, true),
 ];
@@ -212,8 +215,20 @@ fn run_tests() {
 #[no_mangle]
 fn main() -> i32 {
     println!("[init_proc] Hello, NoAxiom!");
+
+    // initialize test environment
+    println!("[init_proc] initializing test environment...");
+    switch_log_off();
     init();
+    switch_log_on();
+    println!("[init_proc] Test environment initialized!");
+
+    // run testsuits
+    println!("[init_proc] Test begin!");
+    println!("\n=======================\n");
     run_tests();
+    println!("\n=======================\n");
     println!("[init_proc] Test finished!");
+
     0
 }

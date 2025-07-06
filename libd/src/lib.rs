@@ -3,6 +3,7 @@
 #![feature(panic_info_message)]
 #![feature(alloc_error_handler)]
 #![feature(lang_items)]
+#![allow(internal_features)]
 
 extern crate alloc;
 
@@ -12,6 +13,7 @@ pub mod arch;
 pub mod entry;
 pub mod errno;
 mod heap;
+pub mod ioctl;
 pub mod lib_basepath;
 pub mod lib_client;
 pub mod lib_event;

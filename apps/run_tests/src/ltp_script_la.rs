@@ -17,6 +17,7 @@ cd /musl/ltp/testcases/bin
 
 
 file_list="
+rt_sigsuspend01
 accept01 accept4_01
 access01 access02 access03
 add_key01 add_key04
