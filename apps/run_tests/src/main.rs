@@ -39,12 +39,12 @@ const TEST_POINTS: &[(&str, bool, bool, bool, bool)] = &[
 ];
 
 const FINAL_TEST_POINTS: &[(&str, bool, bool, bool, bool)] = &[
-    // ("./interrupts_test_1\0", true, true, true, true),
-    // ("./interrupts_test_2\0", true, true, true, true),
-    // ("./copy_file_range_test_1\0", true, true, true, true),
-    // ("./copy_file_range_test_2\0", true, true, true, true),
-    // ("./copy_file_range_test_3\0", true, true, true, true),
-    // ("./copy_file_range_test_4\0", true, true, true, true),
+    ("./interrupts_test_1\0", true, true, true, true),
+    ("./interrupts_test_2\0", true, true, true, true),
+    ("./copy_file_range_test_1\0", true, true, true, true),
+    ("./copy_file_range_test_2\0", true, true, true, true),
+    ("./copy_file_range_test_3\0", true, true, true, true),
+    ("./copy_file_range_test_4\0", true, true, true, true),
     ("./test_splice\0", true, true, true, true),
 ];
 
