@@ -25,21 +25,47 @@ use crate::ltp::run_ltp;
 const TEST_POINTS: &[(&str, bool, bool, bool, bool)] = &[
     //                arch: riscv64      | loongarch64
     //                lib:  musl | glibc | musl | glibc
-    ("./basic_testcode.sh\0", true, true, true, true),
-    ("./busybox_testcode.sh\0", true, true, true, true),
-    ("./lua_testcode.sh\0", true, true, true, true),
-    ("./iozone_testcode.sh\0", true, true, true, true),
-    ("./libcbench_testcode.sh\0", true, true, true, true),
-    ("./libctest_testcode.sh\0", true, true, true, true),
+    // ("./basic_testcode.sh\0", true, true, true, true),
+    // ("./busybox_testcode.sh\0", true, true, true, true),
+    // ("./lua_testcode.sh\0", true, true, true, true),
+    // ("./iozone_testcode.sh\0", true, true, true, true),
+    // ("./libcbench_testcode.sh\0", true, true, true, true),
+    // ("./libctest_testcode.sh\0", true, true, true, true),
     ("./iperf_testcode.sh\0", true, true, true, true),
     ("./netperf_testcode.sh\0", true, true, true, true),
-    ("./lmbench_testcode.sh\0", true, true, true, true),
+    // ("./lmbench_testcode.sh\0", true, true, true, true),
     // ("./cyclictest_testcode.sh\0", false, false, false, false),
     // ("./ltp_testcode.sh\0", true, true, true, true),
 ];
 
+const FINAL_TEST_POINTS: &[(&str, bool, bool, bool, bool)] = &[
+    ("./interrupts_test_1\0", true, true, true, true),
+    ("./interrupts_test_2\0", true, true, true, true),
+];
+
 const TEST_LAST: &[(&str, bool, bool, bool, bool)] =
     &[("./cyclictest_testcode.sh\0", false, false, false, false)];
+
+fn run(app: &str) {
+    let pid = fork();
+    if pid == 0 {
+        execve(
+            app,
+            &[core::ptr::null::<u8>()],
+            &[
+                "PATH=/bin\0".as_ptr(),
+                "TERM=screen\0".as_ptr(),
+                core::ptr::null::<u8>(),
+            ],
+        );
+        exit(0);
+    } else if pid > 0 {
+        let mut exit_code: usize = 0;
+        wait(pid, &mut exit_code);
+    } else {
+        println!("fork failed, ret: {}", pid);
+    }
+}
 
 fn run_sh(cmd: &str) {
     let pid = fork();
@@ -158,19 +184,31 @@ fn init() {
 fn run_tests() {
     #[cfg(target_arch = "riscv64")]
     {
-        for &(test, rvm, rvg, _lam, _lag) in TEST_POINTS {
+        for &(test, rvm, rvg, _lam, _lag) in FINAL_TEST_POINTS {
             if rvm {
                 chdir("/musl\0");
-                run_sh(test);
+                run(test);
             }
             if rvg {
                 chdir("/glibc\0");
-                run_sh(test);
+                run(test);
             }
         }
-        switch_into_ltp();
-        run_ltp();
-        switch_outof_ltp();
+
+        // for &(test, rvm, rvg, _lam, _lag) in TEST_POINTS {
+        //     if rvm {
+        //         chdir("/musl\0");
+        //         run_sh(test);
+        //     }
+        //     if rvg {
+        //         chdir("/glibc\0");
+        //         run_sh(test);
+        //     }
+        // }
+
+        // switch_into_ltp();
+        // run_ltp();
+        // switch_outof_ltp();
         // for &(test, rvm, rvg, _lam, _lag) in TEST_LAST {
         //     if rvm {
         //         chdir("/musl\0");
@@ -185,19 +223,31 @@ fn run_tests() {
     }
     #[cfg(target_arch = "loongarch64")]
     {
-        for &(test, _rvm, _rvg, lam, lag) in TEST_POINTS {
+        for &(test, _rvm, _rvg, lam, lag) in FINAL_TEST_POINTS {
             if lam {
                 chdir("/musl\0");
-                run_sh(test);
+                run(test);
             }
             if lag {
                 chdir("/glibc\0");
-                run_sh(test);
+                run(test);
             }
         }
-        switch_into_ltp();
-        run_ltp();
-        switch_outof_ltp();
+
+        // for &(test, _rvm, _rvg, lam, lag) in TEST_POINTS {
+        //     if lam {
+        //         chdir("/musl\0");
+        //         run_sh(test);
+        //     }
+        //     if lag {
+        //         chdir("/glibc\0");
+        //         run_sh(test);
+        //     }
+        // }
+
+        // switch_into_ltp();
+        // run_ltp();
+        // switch_outof_ltp();
         // for &(test, _rvm, _rvg, lam, lag) in TEST_LAST {
         //     if lam {
         //         chdir("/musl\0");

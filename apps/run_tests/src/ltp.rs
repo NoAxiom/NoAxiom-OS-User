@@ -11,7 +11,7 @@ use crate::{ltp_script_rv::LTP_SH, run_sh};
 pub fn run_ltp() {
     chdir("/\0");
     let fd = open(
-        "/rv-musl-custom_ltptest.sh\0",
+        "/custom_ltptest.sh\0",
         OpenFlags::O_CREATE | OpenFlags::O_WRONLY,
     );
     if fd < 0 {
@@ -20,5 +20,5 @@ pub fn run_ltp() {
     }
     write(fd as usize, LTP_SH.as_bytes());
 
-    run_sh("./rv-musl-custom_ltptest.sh\0");
+    run_sh("./custom_ltptest.sh\0");
 }
