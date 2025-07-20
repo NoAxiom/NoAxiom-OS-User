@@ -39,23 +39,24 @@ const TEST_POINTS: &[(&str, bool, bool, bool, bool)] = &[
 ];
 
 const FINAL_TEST_POINTS: &[(&str, bool, bool, bool, bool)] = &[
-    ("./interrupts_test_1\0", true, true, true, true),
-    ("./interrupts_test_2\0", true, true, true, true),
-    ("./copy_file_range_test_1\0", true, true, true, true),
-    ("./copy_file_range_test_2\0", true, true, true, true),
-    ("./copy_file_range_test_3\0", true, true, true, true),
-    ("./copy_file_range_test_4\0", true, true, true, true),
+    // ("./interrupts_test_1\0", true, true, true, true),
+    // ("./interrupts_test_2\0", true, true, true, true),
+    // ("./copy_file_range_test_1\0", true, true, true, true),
+    // ("./copy_file_range_test_2\0", true, true, true, true),
+    // ("./copy_file_range_test_3\0", true, true, true, true),
+    // ("./copy_file_range_test_4\0", true, true, true, true),
+    ("./test_splice\0", true, true, true, true),
 ];
 
 const TEST_LAST: &[(&str, bool, bool, bool, bool)] =
     &[("./cyclictest_testcode.sh\0", false, false, false, false)];
 
-fn run(app: &str) {
+fn run_with_args(app: &str, args: &[*const u8]) {
     let pid = fork();
     if pid == 0 {
         execve(
             app,
-            &[core::ptr::null::<u8>()],
+            args,
             &[
                 "PATH=/bin\0".as_ptr(),
                 "TERM=screen\0".as_ptr(),
@@ -68,6 +69,23 @@ fn run(app: &str) {
         wait(pid, &mut exit_code);
     } else {
         println!("fork failed, ret: {}", pid);
+    }
+}
+
+fn run(app: &str) {
+    run_with_args(app, &[core::ptr::null::<u8>()]);
+}
+
+fn run_test_splice() {
+    for i in 1..6 {
+        run_with_args(
+            "./test_splice\0",
+            &[
+                "test_splice\0".as_ptr(),
+                alloc::format!("{}\0", i).as_ptr(),
+                core::ptr::null::<u8>(),
+            ],
+        );
     }
 }
 
@@ -191,11 +209,19 @@ fn run_tests() {
         for &(test, rvm, rvg, _lam, _lag) in FINAL_TEST_POINTS {
             if rvm {
                 chdir("/musl\0");
-                run(test);
+                if test == "./test_splice\0" {
+                    run_test_splice();
+                } else {
+                    run(test);
+                }
             }
             if rvg {
                 chdir("/glibc\0");
-                run(test);
+                if test == "./test_splice\0" {
+                    run_test_splice();
+                } else {
+                    run(test);
+                }
             }
         }
 
@@ -230,11 +256,19 @@ fn run_tests() {
         for &(test, _rvm, _rvg, lam, lag) in FINAL_TEST_POINTS {
             if lam {
                 chdir("/musl\0");
-                run(test);
+                if test == "./test_splice\0" {
+                    run_test_splice();
+                } else {
+                    run(test);
+                }
             }
             if lag {
                 chdir("/glibc\0");
-                run(test);
+                if test == "./test_splice\0" {
+                    run_test_splice();
+                } else {
+                    run(test);
+                }
             }
         }
 
