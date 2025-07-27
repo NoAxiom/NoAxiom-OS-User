@@ -21,8 +21,7 @@ fn main() -> i32 {
                 core::ptr::null::<u8>(),
             ],
             &[
-                "PATH=/\0".as_ptr(),
-                // "LD_LIBRARY_PATH=.\0".as_ptr(),
+                "PATH=/bin\0".as_ptr(),
                 "TERM=screen\0".as_ptr(),
                 core::ptr::null::<u8>(),
             ],

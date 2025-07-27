@@ -31,21 +31,16 @@ const TEST_POINTS: &[(&str, bool, bool, bool, bool)] = &[
     // ("./iozone_testcode.sh\0", true, true, true, true),
     // ("./libcbench_testcode.sh\0", true, true, true, true),
     // ("./libctest_testcode.sh\0", true, true, true, true),
-    ("./iperf_testcode.sh\0", true, true, true, true),
-    ("./netperf_testcode.sh\0", true, true, true, true),
+    // ("./iperf_testcode.sh\0", true, true, true, true),
+    // ("./netperf_testcode.sh\0", true, true, true, true),
     // ("./lmbench_testcode.sh\0", true, true, true, true),
     // ("./cyclictest_testcode.sh\0", false, false, false, false),
     // ("./ltp_testcode.sh\0", true, true, true, true),
-];
 
-const FINAL_TEST_POINTS: &[(&str, bool, bool, bool, bool)] = &[
-    ("./interrupts_test_1\0", true, true, true, true),
-    ("./interrupts_test_2\0", true, true, true, true),
-    ("./copy_file_range_test_1\0", true, true, true, true),
-    ("./copy_file_range_test_2\0", true, true, true, true),
-    ("./copy_file_range_test_3\0", true, true, true, true),
-    ("./copy_file_range_test_4\0", true, true, true, true),
-    ("./test_splice\0", true, true, true, true),
+    // ---------final test points-----------
+    ("./interrupts_testcode.sh\0", true, true, true, true),
+    // ("./copy-file-range_testcode.sh\0", true, true, true, true),
+    // ("./splice_testcode.sh\0", true, true, true, true),
 ];
 
 const TEST_LAST: &[(&str, bool, bool, bool, bool)] =
@@ -206,35 +201,16 @@ fn init() {
 fn run_tests() {
     #[cfg(target_arch = "riscv64")]
     {
-        for &(test, rvm, rvg, _lam, _lag) in FINAL_TEST_POINTS {
+        for &(test, rvm, rvg, _lam, _lag) in TEST_POINTS {
             if rvm {
                 chdir("/musl\0");
-                if test == "./test_splice\0" {
-                    run_test_splice();
-                } else {
-                    run(test);
-                }
+                run_sh(test);
             }
             if rvg {
                 chdir("/glibc\0");
-                if test == "./test_splice\0" {
-                    run_test_splice();
-                } else {
-                    run(test);
-                }
+                run_sh(test);
             }
         }
-
-        // for &(test, rvm, rvg, _lam, _lag) in TEST_POINTS {
-        //     if rvm {
-        //         chdir("/musl\0");
-        //         run_sh(test);
-        //     }
-        //     if rvg {
-        //         chdir("/glibc\0");
-        //         run_sh(test);
-        //     }
-        // }
 
         // switch_into_ltp();
         // run_ltp();
@@ -253,35 +229,16 @@ fn run_tests() {
     }
     #[cfg(target_arch = "loongarch64")]
     {
-        for &(test, _rvm, _rvg, lam, lag) in FINAL_TEST_POINTS {
+        for &(test, _rvm, _rvg, lam, lag) in TEST_POINTS {
             if lam {
                 chdir("/musl\0");
-                if test == "./test_splice\0" {
-                    run_test_splice();
-                } else {
-                    run(test);
-                }
+                run_sh(test);
             }
             if lag {
                 chdir("/glibc\0");
-                if test == "./test_splice\0" {
-                    run_test_splice();
-                } else {
-                    run(test);
-                }
+                run_sh(test);
             }
         }
-
-        // for &(test, _rvm, _rvg, lam, lag) in TEST_POINTS {
-        //     if lam {
-        //         chdir("/musl\0");
-        //         run_sh(test);
-        //     }
-        //     if lag {
-        //         chdir("/glibc\0");
-        //         run_sh(test);
-        //     }
-        // }
 
         // switch_into_ltp();
         // run_ltp();
@@ -307,7 +264,7 @@ fn main() -> i32 {
     // initialize test environment
     println!("[init_proc] initializing test environment...");
     switch_log_off();
-    init();
+    // init();
     switch_log_on();
     println!("[init_proc] Test environment initialized!");
 
