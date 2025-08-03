@@ -195,7 +195,10 @@ fn init() {
     run_sh("echo 'services: files' >> /etc/nsswitch.conf\0");
 
     run_sh("echo 'root:x:0:0:root:/root:/bin/bash' > /etc/passwd\0");
-    run_sh("echo 'nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin' >/etc/passwd \0");
+    run_sh("echo 'nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin' >> /etc/passwd\0");
+
+    // Create /etc/group file with essential groups for chmod07 test
+    run_sh("printf 'root:x:0:\\ndaemon:x:1:\\nbin:x:2:\\nsys:x:3:\\nusers:x:100:\\nnogroup:x:65534:\\nltp_test_700:x:700:\\nltp_test_701:x:701:\\nltp_test_702:x:702:\\nltp_test_703:x:703:\\nltp_test_704:x:704:\\nltp_test_705:x:705:\\n' > /etc/group\0");
 }
 
 fn run_tests() {
