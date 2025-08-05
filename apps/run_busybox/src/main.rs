@@ -9,8 +9,37 @@ use libd::{
     syscall::{execve, fork, wait},
 };
 
+fn run_sh(cmd: &str) {
+    let pid = fork();
+    if pid == 0 {
+        // default use musl busybox
+        execve(
+            BUSYBOX,
+            &[
+                "busybox\0".as_ptr(),
+                "sh\0".as_ptr(),
+                "-c\0".as_ptr(),
+                cmd.as_ptr(),
+                core::ptr::null::<u8>(),
+            ],
+            &[
+                "PATH=/bin\0".as_ptr(),
+                "TERM=screen\0".as_ptr(),
+                core::ptr::null::<u8>(),
+            ],
+        );
+    } else if pid > 0 {
+        let mut exit_code: usize = 0;
+        wait(pid, &mut exit_code);
+    } else {
+        println!("fork failed, ret: {}", pid);
+    }
+}
+
 #[no_mangle]
 fn main() -> i32 {
+    run_sh("/musl/busybox --install /bin\0");
+
     let pid = fork();
     if pid == 0 {
         execve(
