@@ -25,22 +25,34 @@ use crate::ltp::run_ltp;
 const TEST_POINTS: &[(&str, bool, bool, bool, bool)] = &[
     //                arch: riscv64      | loongarch64
     //                lib:  musl | glibc | musl | glibc
-    // ("./basic_testcode.sh\0", true, true, true, true),
-    // ("./busybox_testcode.sh\0", true, true, true, true),
-    // ("./lua_testcode.sh\0", true, true, true, true),
-    // ("./iozone_testcode.sh\0", true, true, true, true),
-    // ("./libcbench_testcode.sh\0", true, true, true, true),
-    // ("./libctest_testcode.sh\0", true, true, true, true),
-    // ("./iperf_testcode.sh\0", true, true, true, true),
-    // ("./netperf_testcode.sh\0", true, true, true, true),
-    // ("./lmbench_testcode.sh\0", true, true, true, true),
+    #[cfg(feature = "basic")]
+    ("./basic_testcode.sh\0", true, true, true, true),
+    #[cfg(feature = "busybox")]
+    ("./busybox_testcode.sh\0", true, true, true, true),
+    #[cfg(feature = "lua")]
+    ("./lua_testcode.sh\0", true, true, true, true),
+    #[cfg(feature = "iozone")]
+    ("./iozone_testcode.sh\0", true, true, true, true),
+    #[cfg(feature = "libcbench")]
+    ("./libcbench_testcode.sh\0", true, true, true, true),
+    #[cfg(feature = "libctest")]
+    ("./libctest_testcode.sh\0", true, true, true, true),
+    #[cfg(feature = "iperf")]
+    ("./iperf_testcode.sh\0", true, true, true, true),
+    #[cfg(feature = "netperf")]
+    ("./netperf_testcode.sh\0", true, true, true, true),
+    #[cfg(feature = "lmbench")]
+    ("./lmbench_testcode.sh\0", true, true, true, true),
     // ("./cyclictest_testcode.sh\0", false, false, false, false),
     // ("./ltp_testcode.sh\0", true, true, true, true),
 
     // ---------final test points-----------
-    // ("./interrupts_testcode.sh\0", true, true, true, true),
-    // ("./copy-file-range_testcode.sh\0", true, true, true, true),
-    // ("./splice_testcode.sh\0", true, true, true, true),
+    #[cfg(feature = "final")]
+    ("./interrupts_testcode.sh\0", true, true, true, true),
+    #[cfg(feature = "final")]
+    ("./copy-file-range_testcode.sh\0", true, true, true, true),
+    #[cfg(feature = "final")]
+    ("./splice_testcode.sh\0", true, true, true, true),
 ];
 
 const TEST_LAST: &[(&str, bool, bool, bool, bool)] =
@@ -111,6 +123,7 @@ fn run_sh(cmd: &str) {
     }
 }
 
+// todo: use linkat
 fn copy_file(src: &str, dst: &str) {
     let src_fd = open(src, OpenFlags::O_RDONLY);
     if src_fd < 0 {
@@ -143,6 +156,8 @@ fn copy_file(src: &str, dst: &str) {
 fn init() {
     #[cfg(target_arch = "riscv64")]
     {
+        run_sh("/musl/busybox --install /bin\0");
+        run_sh("mkdir -p /lib\0");
         copy_file(
             "/glibc/lib/ld-linux-riscv64-lp64d.so.1\0",
             "/lib/ld-linux-riscv64-lp64d.so.1\0",
@@ -155,11 +170,15 @@ fn init() {
         copy_file("/glibc/lib/libm.so\0", "/lib/libm.so.6\0");
         copy_file("/musl/lib/libc.so\0", "/lib/ld-musl-riscv64-sf.so.1\0");
         copy_file("/musl/lib/libc.so\0", "/lib/ld-musl-riscv64.so.1\0");
-        run_sh("/musl/busybox --install /bin\0");
+
         println!("[riscv64] init glibc and musl libraries");
     }
     #[cfg(target_arch = "loongarch64")]
     {
+        run_sh("/musl/busybox --install /bin\0");
+        run_sh("mkdir -p /lib\0");
+        run_sh("mkdir -p /lib64\0");
+        run_sh("mkdir -p /usr/lib64\0");
         copy_file(
             "/glibc/lib/ld-linux-loongarch-lp64d.so.1\0",
             "/lib64/ld-linux-loongarch-lp64d.so.1\0",
@@ -176,10 +195,11 @@ fn init() {
             "/musl/lib/libc.so\0",
             "/lib64/ld-musl-loongarch-lp64d.so.1\0",
         );
-        run_sh("/musl/busybox --install /bin\0");
+
         println!("[loongarch64] init glibc and musl libraries");
     }
 
+    run_sh("mkdir -p /tmp\0");
     run_sh("mkdir -p /etc\0");
 
     run_sh("echo 'ip      0       IP      # Internet protocol' > /etc/protocols\0");
@@ -215,9 +235,13 @@ fn run_tests() {
             }
         }
 
-        switch_into_ltp();
-        run_ltp();
-        switch_outof_ltp();
+        #[cfg(feature = "ltp")]
+        {
+            switch_into_ltp();
+            run_ltp();
+            switch_outof_ltp();
+        }
+
         for &(test, rvm, rvg, _lam, _lag) in TEST_LAST {
             if rvm {
                 chdir("/musl\0");
@@ -243,9 +267,13 @@ fn run_tests() {
             }
         }
 
-        switch_into_ltp();
-        run_ltp();
-        switch_outof_ltp();
+        #[cfg(feature = "ltp")]
+        {
+            switch_into_ltp();
+            run_ltp();
+            switch_outof_ltp();
+        }
+
         for &(test, _rvm, _rvg, lam, lag) in TEST_LAST {
             if lam {
                 chdir("/musl\0");

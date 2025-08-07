@@ -9,7 +9,7 @@ use virtio_input_decoder::{DecodeType, Decoder};
 
 use super::{
     syscall::*,
-    utils::{FileMode, OpenFlags},
+    utils::{InodeMode, OpenFlags},
 };
 use crate::syscall::utils::Dirent64;
 
@@ -67,8 +67,8 @@ pub fn open(name: &str, flag: OpenFlags) -> isize {
     sys_openat(
         AT_FDCWD,
         name.as_ptr(),
-        flag.bits() as usize,
-        FileMode::FMODE_RDWR.bits() as usize,
+        flag.bits() as i32,
+        InodeMode::FILE.bits(),
     )
 }
 

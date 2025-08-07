@@ -81,7 +81,7 @@ syscall!(sys_chdir, SYS_CHDIR, *const u8);
 
 syscall!(sys_getcwd, SYS_GETCWD, *mut u8, usize);
 
-syscall!(sys_openat, SYS_OPENAT, isize, *const u8, usize, usize);
+syscall!(sys_openat, SYS_OPENAT, isize, *const u8, i32, u32);
 
 syscall!(sys_getdents, SYS_GETDENTS64, usize, *mut u8, usize);
 

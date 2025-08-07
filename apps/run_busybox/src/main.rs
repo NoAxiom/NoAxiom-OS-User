@@ -39,6 +39,8 @@ fn run_sh(cmd: &str) {
 #[no_mangle]
 fn main() -> i32 {
     run_sh("/musl/busybox --install /bin\0");
+    run_sh("mkdir -p /tmp\0");
+    run_sh("mkdir -p /etc\0");
 
     let pid = fork();
     if pid == 0 {

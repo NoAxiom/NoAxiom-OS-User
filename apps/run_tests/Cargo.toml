@@ -3,5 +3,21 @@ name = "run_tests"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+basic = []
+busybox = []
+lua = []
+iozone = []
+libcbench = []
+libctest = []
+iperf = []
+netperf = []
+lmbench = []
+# cyclictest is not supported yet
+final = []
+ltp = []
+
+default = []
+
 [dependencies]
 libd = { workspace = true }

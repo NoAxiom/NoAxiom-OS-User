@@ -34,11 +34,49 @@ bitflags! {
     }
 }
 bitflags! {
-    pub struct FileMode:u32{
-        const FMODE_READ = 0x0;
-        const FMODE_WRITE = 0x1;
-        const FMODE_RDWR = 0x2;
-        const FMODE_EXEC = 0x5; //read and execute
+    pub struct InodeMode: u32 { // todo: u16
+        /// FIFO.
+        const FIFO  = 0o010000;
+        /// Character device.
+        const CHAR  = 0o020000;
+        /// Directory
+        const DIR   = 0o040000;
+        /// Block device
+        const BLOCK = 0o060000;
+        /// Regular file.
+        const FILE  = 0o100000;
+        /// Symbolic link.
+        const LINK  = 0o120000;
+        /// Socket
+        const SOCKET = 0o140000;
+
+        /// Set-user-ID on execution.
+        const SET_UID = 0o4000;
+        /// Set-group-ID on execution.
+        const SET_GID = 0o2000;
+        /// sticky bit
+        const STICKY = 0o1000;
+
+        /// Read permission, owner.
+        const OWNER_READ = 0o400;
+        /// Write permission, owner.
+        const OWNER_WRITE = 0o200;
+        /// Execute/search permission, owner.
+        const OWNER_EXEC = 0o100;
+
+        /// Read permission, group.
+        const GROUP_READ = 0o40;
+        /// Write permission, group.
+        const GROUP_WRITE = 0o20;
+        /// Execute/search permission, group.
+        const GROUP_EXEC = 0o10;
+
+        /// Read permission, others.
+        const OTHER_READ = 0o4;
+        /// Write permission, others.
+        const OTHER_WRITE = 0o2;
+        /// Execute/search permission, others.
+        const OTHER_EXEC = 0o1;
     }
 }
 
@@ -75,14 +113,6 @@ pub struct StatTime {
     pub hour: u8,
     pub minute: u8,
     pub second: u8,
-}
-bitflags! {
-    #[derive(Default)]
-     pub struct InodeMode:u32{
-        const S_SYMLINK = 0120000;
-        const S_DIR = 0040000;
-        const S_FILE = 0100000;
-    }
 }
 
 #[repr(C)]
