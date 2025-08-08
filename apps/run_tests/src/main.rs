@@ -123,53 +123,23 @@ fn run_sh(cmd: &str) {
     }
 }
 
-// todo: use linkat
-fn copy_file(src: &str, dst: &str) {
-    let src_fd = open(src, OpenFlags::O_RDONLY);
-    if src_fd < 0 {
-        unreachable!("Failed to open source file: {}", src);
-    }
-
-    let dst_fd = open(
-        dst,
-        OpenFlags::O_WRONLY | OpenFlags::O_CREATE | OpenFlags::O_TRUNC,
-    );
-    if dst_fd < 0 {
-        unreachable!("Failed to open destination file: {}", dst);
-    }
-
-    let mut buf = [0u8; 4096];
-    loop {
-        let bytes_read = read(src_fd as usize, &mut buf);
-        if bytes_read == 0 {
-            break;
-        } else if bytes_read < 0 {
-            unreachable!("Failed to read from source file: {}", src);
-        }
-        write(dst_fd as usize, &buf[..bytes_read as usize]);
-    }
-
-    close(src_fd as usize);
-    close(dst_fd as usize);
-}
-
 fn init() {
     #[cfg(target_arch = "riscv64")]
     {
         run_sh("/musl/busybox --install /bin\0");
         run_sh("mkdir -p /lib\0");
-        copy_file(
+        hard_link(
             "/glibc/lib/ld-linux-riscv64-lp64d.so.1\0",
             "/lib/ld-linux-riscv64-lp64d.so.1\0",
         );
-        copy_file(
+        hard_link(
             "/glibc/lib/ld-linux-riscv64-lp64d.so.1\0",
             "/lib/ld-linux-riscv64-lp64.so.1\0",
         );
-        copy_file("/glibc/lib/libc.so\0", "/lib/libc.so.6\0");
-        copy_file("/glibc/lib/libm.so\0", "/lib/libm.so.6\0");
-        copy_file("/musl/lib/libc.so\0", "/lib/ld-musl-riscv64-sf.so.1\0");
-        copy_file("/musl/lib/libc.so\0", "/lib/ld-musl-riscv64.so.1\0");
+        hard_link("/glibc/lib/libc.so\0", "/lib/libc.so.6\0");
+        hard_link("/glibc/lib/libm.so\0", "/lib/libm.so.6\0");
+        hard_link("/musl/lib/libc.so\0", "/lib/ld-musl-riscv64-sf.so.1\0");
+        hard_link("/musl/lib/libc.so\0", "/lib/ld-musl-riscv64.so.1\0");
 
         println!("[riscv64] init glibc and musl libraries");
     }
@@ -179,19 +149,19 @@ fn init() {
         run_sh("mkdir -p /lib\0");
         run_sh("mkdir -p /lib64\0");
         run_sh("mkdir -p /usr/lib64\0");
-        copy_file(
+        hard_link(
             "/glibc/lib/ld-linux-loongarch-lp64d.so.1\0",
             "/lib64/ld-linux-loongarch-lp64d.so.1\0",
         );
-        copy_file("/glibc/lib/libc.so.6\0", "/lib64/libc.so.6\0");
-        copy_file("/glibc/lib/libm.so.6\0", "/lib64/libm.so.6\0");
-        copy_file("/glibc/lib/libc.so.6\0", "/usr/lib64/libc.so.6\0");
-        copy_file("/glibc/lib/libm.so.6\0", "/usr/lib64/libm.so.6\0");
-        copy_file(
+        hard_link("/glibc/lib/libc.so.6\0", "/lib64/libc.so.6\0");
+        hard_link("/glibc/lib/libm.so.6\0", "/lib64/libm.so.6\0");
+        hard_link("/glibc/lib/libc.so.6\0", "/usr/lib64/libc.so.6\0");
+        hard_link("/glibc/lib/libm.so.6\0", "/usr/lib64/libm.so.6\0");
+        hard_link(
             "/musl/lib/libc.so\0",
             "/lib/ld-musl-loongarch64-lp64d.so.1\0",
         );
-        copy_file(
+        hard_link(
             "/musl/lib/libc.so\0",
             "/lib64/ld-musl-loongarch-lp64d.so.1\0",
         );

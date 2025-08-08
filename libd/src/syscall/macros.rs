@@ -47,7 +47,7 @@ macro_rules! syscall {
     };
     ($name:ident, $id:expr, $t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty) => {
         pub fn $name(arg1: $t1, arg2: $t2, arg3: $t3, arg4: $t4, arg5: $t5) -> isize {
-            syscall(
+            crate::arch::syscall::syscall(
                 $id,
                 [
                     arg1 as usize,
@@ -62,7 +62,7 @@ macro_rules! syscall {
     };
     ($name:ident, $id:expr, $t1:ty, $t2:ty, $t3:ty, $t4:ty, $t5:ty, $t6:ty) => {
         pub fn $name(arg1: $t1, arg2: $t2, arg3: $t3, arg4: $t4, arg5: $t5, arg6: $t6) -> isize {
-            syscall(
+            crate::arch::syscall::syscall(
                 $id,
                 [
                     arg1 as usize,

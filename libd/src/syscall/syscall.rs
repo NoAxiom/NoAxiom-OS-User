@@ -102,3 +102,5 @@ syscall!(sys_close, SYS_CLOSE, usize);
 syscall!(sys_get_time, SYS_GETTIMEOFDAY);
 
 syscall!(sys_ioctl, SYS_IOCTL, usize, usize, usize);
+
+syscall!(sys_linkat, SYS_LINKAT, isize, usize, isize, usize, i32);
