@@ -16,7 +16,20 @@ lmbench = []
 # cyclictest is not supported yet
 final = []
 ltp = []
-
+full = [
+    "basic",
+    "busybox",
+    "lua",
+    "iozone",
+    "libcbench",
+    "libctest",
+    "iperf",
+    "netperf",
+    "lmbench",
+    # "cyclictest", // cyclictest is not supported yet
+    "final",
+    "ltp"
+]
 default = []
 
 [dependencies]
