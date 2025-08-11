@@ -105,20 +105,14 @@ pub fn hard_link(old_path: &str, new_path: &str) -> isize {
         println!("Failed to open old path: {}", old_path);
         return old_fd;
     }
-    let new_fd = open(new_path, OpenFlags::O_RDWR | OpenFlags::O_CREATE);
-    if new_fd < 0 {
-        println!("Failed to open new path: {}", new_path);
-        return new_fd;
-    }
     let ret = sys_linkat(
         old_fd,
         old_path.as_ptr() as usize,
-        new_fd,
+        -100,
         new_path.as_ptr() as usize,
         0,
     );
     close(old_fd as usize);
-    close(new_fd as usize);
     ret
 }
 
