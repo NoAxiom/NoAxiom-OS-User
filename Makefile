@@ -41,6 +41,6 @@ asm:
 	@$(foreach dir, $(APPS), (echo -e $(NORMAL)"\t"$(ROOT)/log/$(dir).asm$(RESET));)
 
 parse:
-	cd apps/run_tests/utils && python parse.py
+	cd apps/run_tests/utils && python3 parse.py
 
 .PHONY: all build vendor
