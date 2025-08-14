@@ -59,7 +59,7 @@ const TEST_POINTS: &[(&str, bool, bool, bool, bool)] = &[
 
 const TEST_LAST: &[(&str, bool, bool, bool, bool)] = &[
     #[cfg(feature = "cyclictest")]
-    ("./cyclictest_testcode.sh\0", true, true, true, false),
+    ("./cyclictest_testcode.sh\0", true, true, false, true),
 ];
 
 fn run_sh(cmd: &str) {
