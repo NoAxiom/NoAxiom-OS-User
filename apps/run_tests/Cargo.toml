@@ -29,8 +29,6 @@ full = [
     "netperf",
     "lmbench",
     "cyclictest",
-    "final",
-    "git",
     "ltp_full",
 ]
 ltp_full = ["ltp"]
