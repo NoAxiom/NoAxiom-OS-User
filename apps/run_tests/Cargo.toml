@@ -14,7 +14,7 @@ libctest = []
 iperf = []
 netperf = []
 lmbench = []
-# cyclictest is not supported yet
+cyclictest = []
 final = []
 ltp = []
 git = []
@@ -28,7 +28,7 @@ full = [
     "iperf",
     "netperf",
     "lmbench",
-    # "cyclictest", // cyclictest is not supported yet
+    "cyclictest",
     "final",
     "git",
     "ltp",

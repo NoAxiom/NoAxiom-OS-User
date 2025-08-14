@@ -57,8 +57,10 @@ const TEST_POINTS: &[(&str, bool, bool, bool, bool)] = &[
     ("./git_testcode.sh\0", true, true, true, true),
 ];
 
-const TEST_LAST: &[(&str, bool, bool, bool, bool)] =
-    &[("./cyclictest_testcode.sh\0", false, false, false, false)];
+const TEST_LAST: &[(&str, bool, bool, bool, bool)] = &[
+    #[cfg(feature = "cyclictest")]
+    ("./cyclictest_testcode.sh\0", true, true, true, false),
+];
 
 fn run_sh(cmd: &str) {
     let pid = fork();
