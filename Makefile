@@ -18,7 +18,7 @@ export TESTCASES ?= ltp
 
 all: build
 
-build:
+build: parse
 	@echo -e $(NORMAL)"Building apps..."$(RESET)
 	@rm -rf $(ELF_PATH)
 	@mkdir -p $(ELF_PATH)
@@ -39,5 +39,8 @@ asm:
 	@$(foreach dir, $(APPS), (cd apps/$(dir) && cargo objdump $(CARGO_ARGS) --quiet -- -d > $(ROOT)/log/$(dir).asm);)
 	@echo -e $(NORMAL)"Assembly saved to:"$(RESET)
 	@$(foreach dir, $(APPS), (echo -e $(NORMAL)"\t"$(ROOT)/log/$(dir).asm$(RESET));)
+
+parse:
+	cd apps/run_tests/utils && python parse.py
 
 .PHONY: all build vendor

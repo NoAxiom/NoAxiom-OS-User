@@ -26,6 +26,59 @@ af_alg05
 bind01
 bind02
 bind03
+
+getpid02
+getrlimit03   !!!
+getrusage01
+getsid02
+madvise02
+madvise10
+ppoll01
+request_key02
+
+
+DONE:
+clock_settime01
+clock_settime02
+clock_nanosleep04
+
+TODO:
+clock_settime03
+clock_nanosleep01
+clone03
+clone08
+clone301
+clone302
+execve02
+execve03
+futex_cmp_requeue01
+futex_cmp_requeue02
+getitimer01
+setitimer02
+sbrk01
+sched_getscheduler01
+
+shmctl07
+shmem_2nstest
+shmnstest
+
+sigpending02
+sigsuspend01
+sigwait
+
+tgkill01
+tgkill02
+tgkill03
+tkill02
+
+waitid05
+waitpid11
+waitpid12
+waitpid13
+
+mmap12
+mmap13
+mmap15
 ";
 // net系：需要实现很多新东西，alg系、AF_UNIX地址系
 
@@ -37,26 +90,7 @@ cd /musl/ltp/testcases/bin
 
 
 file_list="
-access01
-access02
-access03
-accept01
-accept03
-accept4_01
-chdir01
-chdir04
-chmod01
-chown02
-chmod03
-chmod05
-chmod07
-chown01
-chown03
-chown05
-chroot01
-chroot02
-chroot03
-chroot04
+# List of LTP test cases to run
 "
 set -- $file_list
 

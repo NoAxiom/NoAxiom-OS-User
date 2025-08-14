@@ -2,9 +2,9 @@
 #![no_main]
 
 mod ltp;
-#[cfg(target_arch = "loongarch64")]
+#[cfg(feature = "ltp_full")]
+mod ltp_full;
 mod ltp_script_la;
-#[cfg(target_arch = "riscv64")]
 mod ltp_script_rv;
 extern crate alloc;
 

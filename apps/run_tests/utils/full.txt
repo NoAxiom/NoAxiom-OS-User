@@ -598,6 +598,9 @@ rename03
 rename08
 rename09
 rename10
+rename12
+rename13
+rename14
 request_key01
 request_key02
 rmdir01

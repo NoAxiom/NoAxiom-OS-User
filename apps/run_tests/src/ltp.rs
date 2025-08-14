@@ -3,12 +3,17 @@ use libd::{
     syscall::{utils::OpenFlags, *},
 };
 
-#[cfg(target_arch = "loongarch64")]
-use crate::{ltp_script_la::LTP_SH, run_sh};
-#[cfg(target_arch = "riscv64")]
-use crate::{ltp_script_rv::LTP_SH, run_sh};
+use crate::run_sh;
 
 pub fn run_ltp() {
+    #[cfg(feature = "ltp_full")]
+    use crate::ltp_full::LTP_SH;
+    #[cfg(not(feature = "ltp_full"))]
+    #[cfg(target_arch = "loongarch64")]
+    use crate::ltp_script_la::LTP_SH;
+    #[cfg(not(feature = "ltp_full"))]
+    #[cfg(target_arch = "riscv64")]
+    use crate::ltp_script_rv::LTP_SH;
     chdir("/\0");
     let fd = open(
         "/custom_ltptest.sh\0",

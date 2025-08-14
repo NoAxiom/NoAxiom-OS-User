@@ -31,8 +31,9 @@ full = [
     "cyclictest",
     "final",
     "git",
-    "ltp",
+    "ltp_full",
 ]
+ltp_full = ["ltp"]
 default = []
 
 [dependencies]
