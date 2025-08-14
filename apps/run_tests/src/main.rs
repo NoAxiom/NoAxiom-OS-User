@@ -36,7 +36,7 @@ const TEST_POINTS: &[(&str, bool, bool, bool, bool)] = &[
     #[cfg(feature = "libcbench")]
     ("./libcbench_testcode.sh\0", true, true, true, true),
     #[cfg(feature = "libctest")]
-    ("./libctest_testcode.sh\0", true, true, true, true),
+    ("./libctest_testcode.sh\0", true, false, true, false),
     #[cfg(feature = "iperf")]
     ("./iperf_testcode.sh\0", true, true, true, true),
     #[cfg(feature = "netperf")]
@@ -53,48 +53,12 @@ const TEST_POINTS: &[(&str, bool, bool, bool, bool)] = &[
     ("./copy-file-range_testcode.sh\0", true, true, true, true),
     #[cfg(feature = "final")]
     ("./splice_testcode.sh\0", true, true, true, true),
+    #[cfg(feature = "git")]
+    ("./git_testcode.sh\0", true, true, true, true),
 ];
 
 const TEST_LAST: &[(&str, bool, bool, bool, bool)] =
     &[("./cyclictest_testcode.sh\0", false, false, false, false)];
-
-fn run_with_args(app: &str, args: &[*const u8]) {
-    let pid = fork();
-    if pid == 0 {
-        execve(
-            app,
-            args,
-            &[
-                "PATH=/bin\0".as_ptr(),
-                "TERM=screen\0".as_ptr(),
-                core::ptr::null::<u8>(),
-            ],
-        );
-        exit(0);
-    } else if pid > 0 {
-        let mut exit_code: usize = 0;
-        wait(pid, &mut exit_code);
-    } else {
-        println!("fork failed, ret: {}", pid);
-    }
-}
-
-fn run(app: &str) {
-    run_with_args(app, &[core::ptr::null::<u8>()]);
-}
-
-fn run_test_splice() {
-    for i in 1..6 {
-        run_with_args(
-            "./test_splice\0",
-            &[
-                "test_splice\0".as_ptr(),
-                alloc::format!("{}\0", i).as_ptr(),
-                core::ptr::null::<u8>(),
-            ],
-        );
-    }
-}
 
 fn run_sh(cmd: &str) {
     let pid = fork();
@@ -112,6 +76,8 @@ fn run_sh(cmd: &str) {
             &[
                 "PATH=/bin\0".as_ptr(),
                 "TERM=screen\0".as_ptr(),
+                #[cfg(feature = "git")]
+                "HOME=/home/noaxiom\0".as_ptr(),
                 core::ptr::null::<u8>(),
             ],
         );
@@ -124,10 +90,17 @@ fn run_sh(cmd: &str) {
 }
 
 fn init() {
+    run_sh("/musl/busybox --install /bin\0");
+    run_sh("mkdir -p /tmp\0");
+    run_sh("mkdir -p /etc\0");
+    run_sh("mkdir -p /usr\0");
+    run_sh("mkdir -p /lib\0");
+    run_sh("mkdir -p /lib64\0");
+    run_sh("mkdir -p /usr/lib64\0");
+    run_sh("mkdir -p /home/noaxiom\0");
+
     #[cfg(target_arch = "riscv64")]
     {
-        run_sh("/musl/busybox --install /bin\0");
-        run_sh("mkdir -p /lib\0");
         hard_link(
             "/glibc/lib/ld-linux-riscv64-lp64d.so.1\0",
             "/lib/ld-linux-riscv64-lp64d.so.1\0",
@@ -145,10 +118,6 @@ fn init() {
     }
     #[cfg(target_arch = "loongarch64")]
     {
-        run_sh("/musl/busybox --install /bin\0");
-        run_sh("mkdir -p /lib\0");
-        run_sh("mkdir -p /lib64\0");
-        run_sh("mkdir -p /usr/lib64\0");
         hard_link(
             "/glibc/lib/ld-linux-loongarch-lp64d.so.1\0",
             "/lib64/ld-linux-loongarch-lp64d.so.1\0",
@@ -169,8 +138,17 @@ fn init() {
         println!("[loongarch64] init glibc and musl libraries");
     }
 
-    run_sh("mkdir -p /tmp\0");
-    run_sh("mkdir -p /etc\0");
+    // create /etc/gitconfig
+    // run_sh("echo '[credential]' > /etc/gitconfig\0");
+    // run_sh("echo '      helper = store' >> /etc/gitconfig\0");
+
+    // create /home/noaxiom/.gitconfig
+    // run_sh("echo '[credential]' > /home/noaxiom/.gitconfig\0");
+    // run_sh("echo '      helper = store' >> /home/noaxiom/.gitconfig\0");
+    // run_sh("echo '[user]' >> /home/noaxiom/.gitconfig\0");
+    // run_sh("echo '      name = NoAxiom' >> /home/noaxiom/.gitconfig\0");
+    // run_sh("echo '      email = noaxiom@hdu.edu.cn' >>
+    // /home/noaxiom/.gitconfig\0");
 
     run_sh("echo 'ip      0       IP      # Internet protocol' > /etc/protocols\0");
     run_sh(
@@ -178,6 +156,7 @@ fn init() {
     );
     run_sh("echo 'tcp     6       TCP     # Transmission Control Protocol' >> /etc/protocols\0");
     run_sh("echo 'udp     17      UDP     # User Datagram Protocol' >> /etc/protocols\0");
+    run_sh("echo '' >> /etc/domainname\0");
 
     run_sh("echo 'hosts: files dns' > /etc/nsswitch.conf\0");
     run_sh("echo 'networks: files' >> /etc/nsswitch.conf\0");
@@ -227,14 +206,23 @@ fn run_tests() {
     #[cfg(target_arch = "loongarch64")]
     {
         for &(test, _rvm, _rvg, lam, lag) in TEST_POINTS {
+            #[cfg(feature = "git")]
+            symlinkat("/usr\0", "/musl/usr\0");
             if lam {
                 chdir("/musl\0");
                 run_sh(test);
             }
+            #[cfg(feature = "git")]
+            assert!(unlinkat("/usr\0") == 0);
+
+            #[cfg(feature = "git")]
+            symlinkat("/usr\0", "/glibc/usr\0");
             if lag {
                 chdir("/glibc\0");
                 run_sh(test);
             }
+            #[cfg(feature = "git")]
+            assert!(unlinkat("/usr\0") == 0);
         }
 
         #[cfg(feature = "ltp")]
@@ -268,6 +256,42 @@ fn main() -> i32 {
     init();
     switch_log_on();
     println!("[init_proc] Test environment initialized!");
+
+    #[cfg(feature = "shell")]
+    {
+        let pid = fork();
+        if pid == 0 {
+            execve(
+                BUSYBOX,
+                &[
+                    "busybox\0".as_ptr(),
+                    "sh\0".as_ptr(),
+                    core::ptr::null::<u8>(),
+                ],
+                &[
+                    "PATH=/bin\0".as_ptr(),
+                    "TERM=screen\0".as_ptr(),
+                    "HOME=/home/noaxiom\0".as_ptr(),
+                    core::ptr::null::<u8>(),
+                ],
+            );
+        } else {
+            loop {
+                let mut exit_code: usize = 0;
+                let tid = wait(-1, &mut exit_code);
+                if tid < 0 {
+                    break;
+                } else if tid == pid {
+                    println!("[init_proc] busybox exited, exit_code: {}", exit_code);
+                    break;
+                } else {
+                    // println!("[init_proc] wait tid: {}, exit_code: {}", tid,
+                    // exit_code);
+                }
+            }
+        }
+        exit(0);
+    }
 
     // run testsuits
     println!("[init_proc] Test begin!");

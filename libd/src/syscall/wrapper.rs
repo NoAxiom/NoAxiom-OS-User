@@ -58,6 +58,10 @@ pub fn chdir(path: &str) -> isize {
     sys_chdir(path.as_ptr())
 }
 
+pub fn chroot(path: &str) -> isize {
+    sys_chroot(path.as_ptr())
+}
+
 pub fn getcwd(path: &mut [u8]) -> isize {
     sys_getcwd(path.as_mut_ptr(), path.len())
 }
@@ -114,6 +118,15 @@ pub fn hard_link(old_path: &str, new_path: &str) -> isize {
     );
     close(old_fd as usize);
     ret
+}
+
+pub fn symlinkat(old_path: &str, new_path: &str) -> isize {
+    sys_symlinkat(new_path.as_ptr() as usize, -100, old_path.as_ptr() as usize)
+}
+
+/// make sure the path can be accessible directly
+pub fn unlinkat(path: &str) -> isize {
+    sys_unlinkat(-100, path.as_ptr() as usize, 0)
 }
 
 #[repr(C)]

@@ -7,7 +7,9 @@ syscall_id!(SYS_GETCWD, 17);
 syscall_id!(SYS_PIPE2, 59);
 syscall_id!(SYS_DUP, 23);
 syscall_id!(SYS_DUP3, 24);
+syscall_id!(SYS_SYMLINKAT, 36);
 syscall_id!(SYS_CHDIR, 49);
+syscall_id!(SYS_CHROOT, 51);
 syscall_id!(SYS_OPENAT, 56);
 syscall_id!(SYS_CLOSE, 57);
 syscall_id!(SYS_GETDENTS64, 61);
@@ -79,6 +81,8 @@ syscall!(sys_read, SYS_READ, usize, *mut u8, usize);
 
 syscall!(sys_chdir, SYS_CHDIR, *const u8);
 
+syscall!(sys_chroot, SYS_CHROOT, *const u8);
+
 syscall!(sys_getcwd, SYS_GETCWD, *mut u8, usize);
 
 syscall!(sys_openat, SYS_OPENAT, isize, *const u8, i32, u32);
@@ -104,3 +108,7 @@ syscall!(sys_get_time, SYS_GETTIMEOFDAY);
 syscall!(sys_ioctl, SYS_IOCTL, usize, usize, usize);
 
 syscall!(sys_linkat, SYS_LINKAT, isize, usize, isize, usize, i32);
+
+syscall!(sys_symlinkat, SYS_SYMLINKAT, usize, isize, usize);
+
+syscall!(sys_unlinkat, SYS_UNLINKAT, isize, usize, i32);

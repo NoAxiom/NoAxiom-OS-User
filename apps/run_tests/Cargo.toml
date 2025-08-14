@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [features]
+shell = []
 basic = []
 busybox = []
 lua = []
@@ -16,6 +17,7 @@ lmbench = []
 # cyclictest is not supported yet
 final = []
 ltp = []
+git = []
 full = [
     "basic",
     "busybox",
@@ -28,7 +30,8 @@ full = [
     "lmbench",
     # "cyclictest", // cyclictest is not supported yet
     "final",
-    "ltp"
+    "git",
+    "ltp",
 ]
 default = []
 
