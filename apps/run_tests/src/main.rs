@@ -80,6 +80,8 @@ fn run_sh(cmd: &str) {
                 "TERM=screen\0".as_ptr(),
                 #[cfg(feature = "git")]
                 "HOME=/home/noaxiom\0".as_ptr(),
+                #[cfg(feature = "git")]
+                "GIT_PAGER=\0".as_ptr(),
                 core::ptr::null::<u8>(),
             ],
         );
@@ -176,14 +178,23 @@ fn run_tests() {
     #[cfg(target_arch = "riscv64")]
     {
         for &(test, rvm, rvg, _lam, _lag) in TEST_POINTS {
+            #[cfg(feature = "git")]
+            symlinkat("/usr\0", "/musl/usr\0");
             if rvm {
                 chdir("/musl\0");
                 run_sh(test);
             }
+            #[cfg(feature = "git")]
+            assert!(unlinkat("/usr\0") == 0);
+
+            #[cfg(feature = "git")]
+            symlinkat("/usr\0", "/musl/usr\0");
             if rvg {
                 chdir("/glibc\0");
                 run_sh(test);
             }
+            #[cfg(feature = "git")]
+            assert!(unlinkat("/usr\0") == 0);
         }
 
         #[cfg(feature = "ltp")]
