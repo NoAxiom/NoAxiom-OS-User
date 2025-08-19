@@ -272,6 +272,24 @@ fn main() -> i32 {
 
     #[cfg(feature = "shell")]
     {
+        #[cfg(feature = "git")]
+        {
+            symlinkat("/bin/git\0", "/musl/usr/bin/git\0");
+            symlinkat("/bin/git-cvsserver\0", "/musl/usr/bin/git-cvsserver\0");
+            symlinkat("/bin/git-daemon\0", "/musl/usr/bin/git-daemon\0");
+            symlinkat(
+                "/bin/git-receive-pack\0",
+                "/musl/usr/bin/git-receive-pack\0",
+            );
+            symlinkat("/bin/git-shell\0", "/musl/usr/bin/git-shell\0");
+            symlinkat(
+                "/bin/git-upload-archive\0",
+                "/musl/usr/bin/git-upload-archive\0",
+            );
+            symlinkat("/bin/git-upload-pack\0", "/musl/usr/bin/git-upload-pack\0");
+            symlinkat("/bin/scalar\0", "/musl/usr/bin/scalar\0");
+            symlinkat("/usr\0", "/musl/usr\0"); // for test
+        }
         let pid = fork();
         if pid == 0 {
             execve(
