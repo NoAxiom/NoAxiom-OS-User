@@ -6,7 +6,7 @@ extern crate alloc;
 use libd::{
     lib_basepath::BUSYBOX,
     println,
-    syscall::{execve, fork, hard_link, wait},
+    syscall::{execve, fork, hard_link, symlinkat, wait},
 };
 
 fn run_sh(cmd: &str) {
@@ -147,6 +147,98 @@ fn main() -> i32 {
         "/lib/libbrotlienc.so.1\0",
     );
     hard_link("/usr/lib/libexpat.so.1.10.2\0", "/lib/libexpat.so.1\0");
+
+    hard_link("/usr/lib/libbrotlienc.so.1\0", "/usr/lib/libbrotlienc.so\0");
+    hard_link("/usr/lib/libjansson.so.4\0", "/usr/lib/libjansson.so\0");
+    hard_link("/usr/lib/libapk.so.2.14.9\0", "/usr/lib/libapk.so.2\0");
+    hard_link(
+        "/usr/lib/libreadline.so.8.2\0",
+        "/usr/lib/libreadline.so.8\0",
+    );
+    hard_link("/usr/lib/libreadline.so.8\0", "/usr/lib/libreadline.so\0");
+    hard_link(
+        "/usr/lib/libbrotlicommon.so.1.1.0\0",
+        "/usr/lib/libbrotlicommon.so.1\0",
+    );
+    hard_link("/usr/lib/libisl.so.23.3.0\0", "/usr/lib/libisl.so.23\0");
+    hard_link("/usr/lib/libgcc_s.so.1\0", "/usr/lib/libgcc_s.so\0");
+    hard_link("/usr/lib/libcares.so.2.19.4\0", "/usr/lib/libcares.so.2\0");
+    hard_link("/usr/lib/libgomp.so.1.0.0\0", "/usr/lib/libgomp.so.1\0");
+    hard_link("/usr/lib/libatomic.so.1\0", "/usr/lib/libatomic.so\0");
+    hard_link("/usr/lib/libzstd.so.1\0", "/usr/lib/libzstd.so\0");
+    hard_link(
+        "/usr/lib/libncursesw.so.6.5\0",
+        "/usr/lib/libncursesw.so.6\0",
+    );
+    hard_link("/usr/lib/libmpfr.so.6\0", "/usr/lib/libmpfr.so\0");
+    hard_link("/usr/lib/libgmp.so.10\0", "/usr/lib/libgmp.so\0");
+    hard_link(
+        "/usr/lib/libunistring.so.5.2.0\0",
+        "/usr/lib/libunistring.so.5\0",
+    );
+    hard_link("/usr/lib/libatomic.so.1.2.0\0", "/usr/lib/libatomic.so.1\0");
+    hard_link("/usr/lib/libctf.so.0\0", "/usr/lib/libctf.so\0");
+    hard_link("/usr/lib/libgomp.so.1\0", "/usr/lib/libgomp.so\0");
+    hard_link(
+        "/usr/lib/libbrotlicommon.so.1\0",
+        "/usr/lib/libbrotlicommon.so\0",
+    );
+    hard_link("/usr/lib/libffi.so.8.1.4\0", "/usr/lib/libffi.so.8\0");
+    hard_link("/usr/lib/libexpat.so.1\0", "/usr/lib/libexpat.so\0");
+    hard_link("/usr/lib/libffi.so.8\0", "/usr/lib/libffi.so\0");
+    hard_link("/usr/lib/libLLVM.so.20.1\0", "/usr/lib/libLLVM.so.20\0");
+    hard_link("/usr/lib/libzstd.so.1.5.7\0", "/usr/lib/libzstd.so.1\0");
+    hard_link("/usr/lib/libgmp.so.10.5.0\0", "/usr/lib/libgmp.so.10\0");
+    hard_link("/usr/lib/libsframe.so.1\0", "/usr/lib/libsframe.so\0");
+    hard_link("/usr/lib/libcc1.so.0\0", "/usr/lib/libcc1.so\0");
+    hard_link("/usr/lib/libz.so.1\0", "/usr/lib/libz.so\0");
+    hard_link("/usr/lib/libmpc.so.3\0", "/usr/lib/libmpc.so\0");
+    hard_link("/usr/lib/libcrypto.so.3\0", "/usr/lib/libcrypto.so\0");
+    hard_link("/usr/lib/liblzma.so.5.8.1\0", "/usr/lib/liblzma.so.5\0");
+    hard_link("/usr/lib/libidn2.so.0\0", "/usr/lib/libidn2.so\0");
+    hard_link("/usr/lib/libcares.so.2\0", "/usr/lib/libcares.so\0");
+    hard_link("/usr/lib/libssl.so.3\0", "/usr/lib/libssl.so\0");
+    hard_link("/usr/lib/libcurl.so.4\0", "/usr/lib/libcurl.so\0");
+    hard_link("/usr/lib/liblzma.so.5\0", "/usr/lib/liblzma.so\0");
+    hard_link("/usr/lib/libnghttp2.so.14\0", "/usr/lib/libnghttp2.so\0");
+    hard_link("/usr/lib/libunistring.so.5\0", "/usr/lib/libunistring.so\0");
+    hard_link("/usr/lib/libbrotlidec.so.1\0", "/usr/lib/libbrotlidec.so\0");
+    hard_link(
+        "/usr/lib/libnghttp2.so.14.28.4\0",
+        "/usr/lib/libnghttp2.so.14\0",
+    );
+    hard_link("/usr/lib/libxml2.so.2\0", "/usr/lib/libxml2.so\0");
+    hard_link("/usr/lib/libsframe.so.1.0.0\0", "/usr/lib/libsframe.so.1\0");
+    hard_link("/usr/lib/libmpc.so.3.3.1\0", "/usr/lib/libmpc.so.3\0");
+    hard_link("/usr/lib/libcc1.so.0.0.0\0", "/usr/lib/libcc1.so.0\0");
+    hard_link("/usr/lib/libctf.so.0.0.0\0", "/usr/lib/libctf.so.0\0");
+    hard_link(
+        "/usr/lib/libbrotlidec.so.1.1.0\0",
+        "/usr/lib/libbrotlidec.so.1\0",
+    );
+    hard_link("/usr/lib/libmpfr.so.6.2.1\0", "/usr/lib/libmpfr.so.6\0");
+    hard_link("/usr/lib/libcurl.so.4.8.0\0", "/usr/lib/libcurl.so.4\0");
+    hard_link("/usr/lib/libpsl.so.5\0", "/usr/lib/libpsl.so\0");
+    hard_link("/usr/lib/libncursesw.so.6\0", "/usr/lib/libncursesw.so\0");
+    hard_link("/usr/lib/libisl.so.23\0", "/usr/lib/libisl.so\0");
+    hard_link("/usr/lib/libpsl.so.5.3.5\0", "/usr/lib/libpsl.so.5\0");
+    hard_link("/usr/lib/libxml2.so.2.13.8\0", "/usr/lib/libxml2.so.2\0");
+    hard_link("/usr/lib/libidn2.so.0.4.0\0", "/usr/lib/libidn2.so.0\0");
+    hard_link("/usr/lib/libz.so.1.3.1\0", "/usr/lib/libz.so.1\0");
+    hard_link(
+        "/usr/lib/libjansson.so.4.14.1\0",
+        "/usr/lib/libjansson.so.4\0",
+    );
+    hard_link(
+        "/usr/lib/libbrotlienc.so.1.1.0\0",
+        "/usr/lib/libbrotlienc.so.1\0",
+    );
+    hard_link("/usr/lib/libexpat.so.1.10.2\0", "/usr/lib/libexpat.so.1\0");
+
+    symlinkat(
+        "/usr/lib/libstdc++.so.6\0",
+        "/usr/lib/libstdc++.so.6.0.33\0",
+    );
 
     let pid = fork();
     if pid == 0 {
