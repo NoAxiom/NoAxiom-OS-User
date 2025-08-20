@@ -38,21 +38,17 @@ fn run_sh(cmd: &str) {
 
 #[no_mangle]
 fn main() -> i32 {
-    run_sh("/musl/busybox --install /bin\0");
-    run_sh("mkdir -p /tmp\0");
-    run_sh("mkdir -p /etc\0");
-
     let pid = fork();
     if pid == 0 {
         execve(
-            BUSYBOX,
+            "/bin/busybox\0",
             &[
                 "busybox\0".as_ptr(),
                 "sh\0".as_ptr(),
                 core::ptr::null::<u8>(),
             ],
             &[
-                "PATH=/bin\0".as_ptr(),
+                "PATH=/bin:/usr/bin\0".as_ptr(),
                 "TERM=screen\0".as_ptr(),
                 core::ptr::null::<u8>(),
             ],
