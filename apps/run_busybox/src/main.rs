@@ -635,6 +635,8 @@ fn main() -> i32 {
         symlinkat("/usr/lib/libzstd.so.1\0", "/usr/lib/libzstd.so.1.5.6\0");
     }
 
+    run_sh("mkdir -p /home/noaxiom\0");
+
     let pid = fork();
     if pid == 0 {
         execve(
@@ -647,6 +649,9 @@ fn main() -> i32 {
             &[
                 "PATH=/bin:/usr/bin\0".as_ptr(),
                 "TERM=screen\0".as_ptr(),
+                "HOME=/home/noaxiom\0".as_ptr(),
+                "GIT_PAGER=\0".as_ptr(),
+                "CARGO_BUILD_JOBS=1\0".as_ptr(),
                 core::ptr::null::<u8>(),
             ],
         );
